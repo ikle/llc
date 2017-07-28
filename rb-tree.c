@@ -7,7 +7,8 @@
  */
 
 #include <stdlib.h>
-#include "rbtree.h"
+
+#include "rb-tree.h"
 
 struct rb_node {
 	struct rb_node *left, *right, *parent;
