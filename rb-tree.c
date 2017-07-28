@@ -75,6 +75,9 @@ static void rb_free_node (struct rb_tree *t, struct rb_node *n,
 
 void rb_free (struct rb_tree *t, void (*free_data) (void *data))
 {
+	if (t == NULL)
+		return;
+
 	rb_free_node (t, rb_root (t), free_data);
 	free (t);
 }
