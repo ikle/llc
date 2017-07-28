@@ -2,7 +2,7 @@ AR ?= ar
 RANLIB ?= ranlib
 
 TARGETS = libparser.a
-CFLAGS = -O6 -I"$(CURDIR)"/include
+CFLAGS = -Wall -O6 -I"$(CURDIR)"/include
 
 SOURCES = *.c
 OBJECTS = $(patsubst %.c,%.o, $(wildcard $(SOURCES)))
