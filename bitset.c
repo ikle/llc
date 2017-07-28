@@ -1,3 +1,11 @@
+/*
+ * Compact Binary Set
+ *
+ * Copyright (c) 2007-2017 Alexei A. Smekalkine
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>

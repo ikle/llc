@@ -1,3 +1,11 @@
+/*
+ * Compact Binary Set
+ *
+ * Copyright (c) 2007-2017 Alexei A. Smekalkine
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 #ifndef BITSET_H
 #define BITSET_H  1
 
