@@ -64,6 +64,7 @@ x_term_1:
 	GOT (TERM);
 }
 
+#ifndef NOGENERIC
 #include <stdlib.h>
 #include <string.h>
 
@@ -137,3 +138,4 @@ int lexer_file_init (struct lexer *o, FILE *f)
 }
 
 #endif  /* NOFILE */
+#endif  /* NOGENERIC */

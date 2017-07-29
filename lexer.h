@@ -28,6 +28,7 @@ enum lexer_token {
 	LEXER_TERM,		/* ; */
 };
 
+#ifndef NOGENERIC
 typedef int lexer_read_fn (char *buf, size_t size, void *cookie);
 
 struct lexer {
@@ -48,5 +49,6 @@ int  lexer_process (struct lexer *o);
 int lexer_file_init (struct lexer *o, FILE *f);
 
 #endif  /* NOFILE */
+#endif  /* NOGENERIC */
 
 #endif  /* LEXER_H */
