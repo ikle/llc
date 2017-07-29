@@ -78,6 +78,13 @@ void grammar_fini (struct grammar *o)
 	rb_free (o->set, symbol_free);
 }
 
+/*
+ * The grammar_lookup function lookups symbol name in the specified
+ * grammar.
+ *
+ * Returns a pointer to the symbol in grammar or NULL in case of memory
+ * allocation error.
+ */
 struct symbol *grammar_lookup (struct grammar *rt, const char *name)
 {
 	struct rb_tree *o = (void *) rt;
