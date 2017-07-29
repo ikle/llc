@@ -33,8 +33,7 @@ int lexer_process (struct lexer *o)
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
 		GOTO (SPACE_1);
 
-	if ((HEAD >= 'A' && HEAD <= 'Z') ||
-	    (HEAD >= 'a' && HEAD <= 'z'))
+	if ((HEAD >= 'A' && HEAD <= 'Z') || (HEAD >= 'a' && HEAD <= 'z'))
 		GOTO (ID_1);
 
 	if (HEAD ==  ':')
