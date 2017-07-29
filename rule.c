@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rb-tree.h"
 #include "rule.h"
 
 static int symbol_compare (const void *a, const void *b)
@@ -47,21 +46,18 @@ static void symbol_free (void *s)
 	free (o);
 }
 
-struct grammar *grammar_alloc (void)
+int grammar_init (struct grammar *o)
 {
-	struct rb_tree *o;
+	if ((o->set = rb_alloc (symbol_compare)) == NULL)
+		return 0;
 
-	if ((o = rb_alloc (symbol_compare)) == NULL)
-		return NULL;
-
-	return (void *) o;
+	o->start = NULL;
+	return 1;
 }
 
-void grammar_free (struct grammar *rt)
+void grammar_fini (struct grammar *o)
 {
-	struct rb_tree *o = (void *) rt;
-
-	rb_free (o, symbol_free);
+	rb_free (o->set, symbol_free);
 }
 
 struct symbol *grammar_lookup (struct grammar *rt, const char *name)

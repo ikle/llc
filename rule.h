@@ -9,10 +9,16 @@
 #ifndef RULE_H
 #define RULE_H  1
 
+#include "rb-tree.h"
 #include "seq.h"
 
-struct grammar *grammar_alloc (void);
-void grammar_free (struct grammar *o);
+struct grammar {
+	struct rb_tree *set;	/* set of symbols          */
+	struct symbol *start;	/* start symbol of grammar */
+};
+
+int  grammar_init (struct grammar *o);
+void grammar_fini (struct grammar *o);
 
 struct rhs {
 	struct rhs *next;
