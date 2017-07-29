@@ -9,11 +9,28 @@
 #ifndef RULE_H
 #define RULE_H  1
 
+#include "seq.h"
+
 struct rule_table *rule_table_alloc (void);
 void rule_table_free (struct rule_table *o);
 
+struct rhs {
+	struct rhs *next;
+	struct symbol *s;
+};
+
+SEQ_DECLARE (rhs)
+
+struct rule {
+	struct rule *next;
+	struct rhs_seq seq;
+};
+
+SEQ_DECLARE (rule)
+
 struct symbol {
 	char *name;
+	struct rule_seq seq;
 };
 
 /*
