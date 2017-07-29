@@ -28,6 +28,7 @@ static struct symbol *symbol_alloc (const char *name)
 	if ((o->name = strdup (name)) == NULL)
 		goto no_strdup;
 
+	rule_seq_init (&o->seq);
 	return o;
 no_strdup:
 	free (o);
@@ -35,12 +36,29 @@ no_symbol:
 	return NULL;
 }
 
+static void rhs_free (struct rhs *o)
+{
+	free (o);
+}
+
+static void rule_free (struct rule *o)
+{
+	struct rhs *p;
+
+	while ((p = rhs_seq_pop (&o->seq)) != NULL)
+		rhs_free (p);
+}
+
 static void symbol_free (void *s)
 {
 	struct symbol *o = s;
+	struct rule *p;
 
 	if (o == NULL)
 		return;
+
+	while ((p = rule_seq_pop (&o->seq)) != NULL)
+		rule_free (p);
 
 	free (o->name);
 	free (o);
