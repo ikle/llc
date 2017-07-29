@@ -28,20 +28,24 @@ enum lexer_token {
 	LEXER_TERM,		/* ; */
 };
 
-#ifndef NOFILE
-#include <stdio.h>
+typedef int lexer_read_fn (char *buf, size_t size, void *cookie);
 
-struct lexer_file {
+struct lexer {
 	struct lexer_buf lexer;
 	char *buf;
 	size_t len;
 	void *cookie;
-	int (*read) (char *buf, size_t size, void *cookie);
+	lexer_read_fn *read;
 };
 
-int  lexer_file_init (struct lexer_file *o, FILE *f);
-void lexer_file_fini (struct lexer_file *o);
-int  lexer_file_process (struct lexer_file *o);
+int  lexer_init (struct lexer *o, void *cookie, lexer_read_fn *read);
+void lexer_fini (struct lexer *o);
+int  lexer_process (struct lexer *o);
+
+#ifndef NOFILE
+#include <stdio.h>
+
+int lexer_file_init (struct lexer *o, FILE *f);
 
 #endif  /* NOFILE */
 

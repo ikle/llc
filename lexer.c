@@ -64,27 +64,12 @@ x_term_1:
 	GOT (TERM);
 }
 
-#ifndef NOFILE
-
-#include <stdio.h>
-
-static int file_read (char *buf, size_t size, void *cookie)
-{
-	size_t len;
-
-	len = fread (buf, 1, size, cookie);
-	if (len == 0)
-		return feof (cookie) ? 0 : -1;
-
-	return len;
-}
-
 #include <stdlib.h>
 #include <string.h>
 
 static const size_t size = BUFSIZ;
 
-int lexer_file_init (struct lexer_file *o, FILE *f)
+int lexer_init (struct lexer *o, void *cookie, lexer_read_fn *read)
 {
 	if ((o->buf = malloc (size)) == NULL)
 		return 0;
@@ -93,18 +78,18 @@ int lexer_file_init (struct lexer_file *o, FILE *f)
 	o->buf[o->len] = '\0';
 	lexer_buf_init (&o->lexer, o->buf);
 
-	o->cookie = f;
-	o->read = file_read;
+	o->cookie = cookie;
+	o->read = read;
 
 	return 1;
 }
 
-void lexer_file_fini (struct lexer_file *o)
+void lexer_fini (struct lexer *o)
 {
 	free (o->buf);
 }
 
-int lexer_file_process (struct lexer_file *o)
+int lexer_process (struct lexer *o)
 {
 	int token;
 	size_t len;
@@ -129,6 +114,26 @@ int lexer_file_process (struct lexer_file *o)
 	lexer_buf_init (&o->lexer, o->buf);
 
 	return lexer_buf_process (&o->lexer);
+}
+
+#ifndef NOFILE
+
+#include <stdio.h>
+
+static int file_read (char *buf, size_t size, void *cookie)
+{
+	size_t len;
+
+	len = fread (buf, 1, size, cookie);
+	if (len == 0)
+		return feof (cookie) ? 0 : -1;
+
+	return len;
+}
+
+int lexer_file_init (struct lexer *o, FILE *f)
+{
+	return lexer_init (o, f, file_read);
 }
 
 #endif  /* NOFILE */
