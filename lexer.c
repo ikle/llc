@@ -63,3 +63,51 @@ x_or_1:
 x_term_1:
 	GOT (TERM);
 }
+
+#include <stdlib.h>
+#include <string.h>
+
+static const size_t size = BUFSIZ;
+
+int lexer_file_init (struct lexer_file *o)
+{
+	if ((o->buf = malloc (size)) == NULL)
+		return 0;
+
+	o->len = 0;
+	o->buf[o->len] = '\0';
+	lexer_init (&o->lexer, o->buf);
+
+	return 1;
+}
+
+void lexer_file_fini (struct lexer_file *o)
+{
+	free (o->buf);
+}
+
+int lexer_file_process (struct lexer_file *o, FILE *f)
+{
+	int token;
+	size_t len;
+
+	token = lexer_process (&o->lexer);
+
+	if (token > LEXER_EOI ||
+	    (token == LEXER_EOI && feof (f)))
+		return token;
+
+	/* drop processed data */
+	o->len = (o->buf + o->len) - o->lexer.start;
+	memmove (o->buf, o->lexer.start, o->len);
+
+	len = fread (o->buf + o->len, 1, size - 1 - o->len, f);
+	if (ferror (f))
+		return LEXER_ERROR;
+
+	o->len += len;
+	o->buf[o->len] = '\0';
+	lexer_init (&o->lexer, o->buf);
+
+	return lexer_process (&o->lexer);
+}
