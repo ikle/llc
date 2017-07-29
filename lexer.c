@@ -28,39 +28,39 @@ int lexer_process (struct lexer *o)
 	o->start = o->stop;
 start:
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
-		GOTO (SPACE_1);
+		GOTO (space_1);
 
 	if ((HEAD >= 'A' && HEAD <= 'Z') || (HEAD >= 'a' && HEAD <= 'z'))
-		GOTO (ID_1);
+		GOTO (id_1);
 
 	if (HEAD ==  ':')
-		GOTO (IS_1);
+		GOTO (is_1);
 
 	if (HEAD == '|')
-		GOTO (OR_1);
+		GOTO (or_1);
 
 	if (HEAD == ';')
-		GOTO (TERM_1);
+		GOTO (term_1);
 
 	GOT (ERROR);
-x_SPACE_1:
+x_space_1:
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
-		GOTO (SPACE_1);
+		GOTO (space_1);
 
 	IGNORE;
-x_ID_1:
+x_id_1:
 	if (HEAD == '-')
 		NEXT;
 
 	if ((HEAD >= 'A' && HEAD <= 'Z') || (HEAD >= 'a' && HEAD <= 'z') ||
 	    (HEAD >= '0' && HEAD <= '9'))
-		GOTO (ID_1);
+		GOTO (id_1);
 
 	GOT (ID);
-x_IS_1:
+x_is_1:
 	GOT (IS);
-x_OR_1:
+x_or_1:
 	GOT (OR);
-x_TERM_1:
+x_term_1:
 	GOT (TERM);
 }
