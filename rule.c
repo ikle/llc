@@ -47,7 +47,7 @@ static void symbol_free (void *s)
 	free (o);
 }
 
-struct rule_table *rule_table_alloc (void)
+struct grammar *grammar_alloc (void)
 {
 	struct rb_tree *o;
 
@@ -57,14 +57,14 @@ struct rule_table *rule_table_alloc (void)
 	return (void *) o;
 }
 
-void rule_table_free (struct rule_table *rt)
+void grammar_free (struct grammar *rt)
 {
 	struct rb_tree *o = (void *) rt;
 
 	rb_free (o, symbol_free);
 }
 
-struct symbol *rule_table_lookup (struct rule_table *rt, const char *name)
+struct symbol *grammar_lookup (struct grammar *rt, const char *name)
 {
 	struct rb_tree *o = (void *) rt;
 	struct rb_node *n;
