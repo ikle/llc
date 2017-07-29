@@ -20,23 +20,23 @@ struct grammar {
 int  grammar_init (struct grammar *o);
 void grammar_fini (struct grammar *o);
 
+struct rhs_symbol {
+	struct rhs_symbol *next;
+	struct symbol *s;
+};
+
+SEQ_DECLARE (rhs_symbol)
+
 struct rhs {
 	struct rhs *next;
-	struct symbol *s;
+	struct rhs_symbol_seq seq;
 };
 
 SEQ_DECLARE (rhs)
 
-struct rule {
-	struct rule *next;
-	struct rhs_seq seq;
-};
-
-SEQ_DECLARE (rule)
-
 struct symbol {
 	char *name;
-	struct rule_seq seq;
+	struct rhs_seq seq;
 };
 
 /*
