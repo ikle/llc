@@ -11,11 +11,13 @@
 
 #include <stddef.h>
 
+typedef char lexer_input_t;
+
 struct lexer_buf {
-	const char *start, *stop;  /* matched item */
+	const lexer_input_t *start, *stop;  /* matched item */
 };
 
-void lexer_buf_init (struct lexer_buf *o, const char *buf);
+void lexer_buf_init (struct lexer_buf *o, const lexer_input_t *buf);
 int  lexer_buf_process (struct lexer_buf *o);
 
 enum lexer_token {
@@ -29,11 +31,11 @@ enum lexer_token {
 };
 
 #ifndef NOGENERIC
-typedef int lexer_read_fn (char *buf, size_t count, void *cookie);
+typedef int lexer_read_fn (lexer_input_t *buf, size_t count, void *cookie);
 
 struct lexer {
 	struct lexer_buf lexer;
-	char *buf;
+	lexer_input_t *buf;
 	size_t len;
 	void *cookie;
 	lexer_read_fn *read;

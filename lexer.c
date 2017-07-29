@@ -8,7 +8,7 @@
 
 #include "lexer.h"
 
-void lexer_buf_init (struct lexer_buf *o, const char *buf)
+void lexer_buf_init (struct lexer_buf *o, const lexer_input_t *buf)
 {
 	o->start = o->stop = buf;
 }
@@ -68,11 +68,11 @@ x_term_1:
 #include <stdlib.h>
 #include <string.h>
 
-static const size_t count = BUFSIZ;
+static const size_t count = BUFSIZ / sizeof (lexer_input_t);
 
 int lexer_init (struct lexer *o, void *cookie, lexer_read_fn *read)
 {
-	if ((o->buf = malloc (count)) == NULL)
+	if ((o->buf = malloc (count * sizeof (o->buf[0]))) == NULL)
 		return 0;
 
 	o->len = 0;
@@ -121,11 +121,11 @@ int lexer_process (struct lexer *o)
 
 #include <stdio.h>
 
-static int file_read (char *buf, size_t count, void *cookie)
+static int file_read (lexer_input_t *buf, size_t count, void *cookie)
 {
 	size_t len;
 
-	len = fread (buf, 1, count, cookie);
+	len = fread (buf, sizeof (lexer_input_t), count, cookie);
 	if (len == 0)
 		return feof (cookie) ? 0 : -1;
 
