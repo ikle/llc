@@ -17,7 +17,7 @@ struct type##_seq {							\
 	struct type *head, **tail;					\
 };									\
 									\
-static void type##_seq_init (struct type##_seq *s)			\
+static inline void type##_seq_init (struct type##_seq *s)		\
 {									\
 	assert (s != NULL);						\
 									\
@@ -25,7 +25,8 @@ static void type##_seq_init (struct type##_seq *s)			\
 	s->tail = &s->head;						\
 }									\
 									\
-void type##_seq_fini (struct type##_seq *s, void (*f) (struct type *))	\
+void inline type##_seq_fini (struct type##_seq *s,			\
+			     void (*f) (struct type *))			\
 {									\
 	struct type *i, *next;						\
 									\
@@ -38,7 +39,8 @@ void type##_seq_fini (struct type##_seq *s, void (*f) (struct type *))	\
 	}								\
 }									\
 									\
-static void type##_seq_push (struct type##_seq *s, struct type *i)	\
+static inline void type##_seq_push (struct type##_seq *s,		\
+				    struct type *i)			\
 {									\
 	assert (s != NULL);						\
 	assert (i != NULL);						\
@@ -50,7 +52,7 @@ static void type##_seq_push (struct type##_seq *s, struct type *i)	\
 	s->head = i;							\
 }									\
 									\
-static struct type *type##_seq_pop (struct type##_seq *s)		\
+static inline struct type *type##_seq_pop (struct type##_seq *s)	\
 {									\
 	struct type *i = s->head;					\
 									\
@@ -66,7 +68,8 @@ static struct type *type##_seq_pop (struct type##_seq *s)		\
 	return i;							\
 }									\
 									\
-static void type##_seq_enqueue (struct type##_seq *s, struct type *i)	\
+static inline void type##_seq_enqueue (struct type##_seq *s,		\
+				       struct type *i)			\
 {									\
 	assert (s != NULL);						\
 	assert (i != NULL);						\
@@ -75,14 +78,14 @@ static void type##_seq_enqueue (struct type##_seq *s, struct type *i)	\
 	s->tail = &i->next;						\
 }									\
 									\
-static struct type *type##_seq_dequeue (struct type##_seq *s)		\
+static inline struct type *type##_seq_dequeue (struct type##_seq *s)	\
 {									\
 	assert (s != NULL);						\
 									\
 	return type##_seq_pop (s);					\
 }									\
 									\
-static int type##_seq_is_empty (struct type##_seq *s)			\
+static inline int type##_seq_is_empty (struct type##_seq *s)		\
 {									\
 	assert (s != NULL);						\
 									\
