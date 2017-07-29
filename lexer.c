@@ -68,11 +68,11 @@ x_term_1:
 #include <stdlib.h>
 #include <string.h>
 
-static const size_t size = BUFSIZ;
+static const size_t count = BUFSIZ;
 
 int lexer_init (struct lexer *o, void *cookie, lexer_read_fn *read)
 {
-	if ((o->buf = malloc (size)) == NULL)
+	if ((o->buf = malloc (count)) == NULL)
 		return 0;
 
 	o->len = 0;
@@ -104,7 +104,7 @@ int lexer_process (struct lexer *o)
 	o->len = (o->buf + o->len) - o->lexer.start;
 	memmove (o->buf, o->lexer.start, o->len);
 
-	len = o->read (o->buf + o->len, size - 1 - o->len, o->cookie);
+	len = o->read (o->buf + o->len, count - 1 - o->len, o->cookie);
 	if (len == 0)
 		return LEXER_EOI;
 	else if (len < 0)
@@ -121,11 +121,11 @@ int lexer_process (struct lexer *o)
 
 #include <stdio.h>
 
-static int file_read (char *buf, size_t size, void *cookie)
+static int file_read (char *buf, size_t count, void *cookie)
 {
 	size_t len;
 
-	len = fread (buf, 1, size, cookie);
+	len = fread (buf, 1, count, cookie);
 	if (len == 0)
 		return feof (cookie) ? 0 : -1;
 

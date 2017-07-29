@@ -29,7 +29,7 @@ enum lexer_token {
 };
 
 #ifndef NOGENERIC
-typedef int lexer_read_fn (char *buf, size_t size, void *cookie);
+typedef int lexer_read_fn (char *buf, size_t count, void *cookie);
 
 struct lexer {
 	struct lexer_buf lexer;
