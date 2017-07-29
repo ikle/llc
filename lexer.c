@@ -64,6 +64,8 @@ x_term_1:
 	GOT (TERM);
 }
 
+#ifndef NOFILE
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -111,3 +113,5 @@ int lexer_file_process (struct lexer_file *o, FILE *f)
 
 	return lexer_process (&o->lexer);
 }
+
+#endif  /* NOFILE */

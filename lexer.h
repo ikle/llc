@@ -10,7 +10,6 @@
 #define LEXER_H  1
 
 #include <stddef.h>
-#include <stdio.h>
 
 struct lexer {
 	const char *start, *stop;  /* matched item */
@@ -18,6 +17,9 @@ struct lexer {
 
 void lexer_init (struct lexer *o, const char *buf);
 int lexer_process (struct lexer *o);
+
+#ifndef NOFILE
+#include <stdio.h>
 
 struct lexer_file {
 	struct lexer lexer;
@@ -28,6 +30,8 @@ struct lexer_file {
 int  lexer_file_init (struct lexer_file *o);
 void lexer_file_fini (struct lexer_file *o);
 int  lexer_file_process (struct lexer_file *o, FILE *f);
+
+#endif  /* NOFILE */
 
 enum lexer_token {
 	LEXER_ERROR = -1,
