@@ -22,7 +22,7 @@ void grammar_fini (struct grammar *o);
 
 struct rhs_symbol {
 	struct rhs_symbol *next;
-	struct symbol *s;
+	struct symbol *symbol;
 };
 
 SEQ_DECLARE (rhs_symbol)
@@ -47,5 +47,23 @@ struct symbol {
  * allocation error.
  */
 struct symbol *grammar_lookup (struct grammar *o, const char *name);
+
+/*
+ * The rhs_symbol_add function allocates new RHS symbol and insert it
+ * to the end of the specified RHS.
+ *
+ * Returns non-zero on success or zero in case of memory allocation
+ * error.
+ */
+int rhs_symbol_add (struct grammar *g, struct rhs *rhs, const char *name);
+
+/*
+ * The rhs_add function allocates new RHS alternative and insert it to
+ * the end of the specified LHS.
+ *
+ * Returns pointer to the new RHS or NULL in case of memory allocation
+ * error.
+ */
+struct rhs *rhs_put (struct symbol *lhs);
 
 #endif  /* RULE_H */

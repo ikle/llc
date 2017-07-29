@@ -110,3 +110,47 @@ no_insert:
 no_symbol:
 	return NULL;
 }
+
+/*
+ * The rhs_symbol_add function allocates new RHS symbol and insert it
+ * to the end of the specified RHS.
+ *
+ * Returns non-zero on success or zero in case of memory allocation
+ * error.
+ */
+int rhs_symbol_add (struct grammar *g, struct rhs *rhs, const char *name)
+{
+	struct symbol *s;
+	struct rhs_symbol *o;
+
+	if ((s = grammar_lookup (g, name)) == NULL ||
+	    (o = malloc (sizeof (*s))) == NULL)
+		return 0;
+
+	o->next = NULL;
+	o->symbol = s;
+
+	rhs_symbol_seq_enqueue (&rhs->seq, o);
+	return 1;
+}
+
+/*
+ * The rhs_add function allocates new RHS alternative and insert it to
+ * the end of the specified LHS.
+ *
+ * Returns pointer to the new RHS or NULL in case of memory allocation
+ * error.
+ */
+struct rhs *rhs_put (struct symbol *lhs)
+{
+	struct rhs *o;
+
+	if ((o = malloc (sizeof (*o))) == NULL)
+		return NULL;
+
+	o->next = NULL;
+	rhs_symbol_seq_init (&o->seq);
+
+	rhs_seq_enqueue (&lhs->seq, o);
+	return o;
+}
