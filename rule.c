@@ -98,6 +98,9 @@ struct symbol *grammar_lookup (struct grammar *o, const char *name)
 	if ((s = symbol_alloc (name)) == NULL)
 		goto no_symbol;
 
+	if (o->start == NULL)
+		o->start = s;
+
 	if ((n = rb_insert (o->set, s)) == NULL)
 		goto no_insert;
 
