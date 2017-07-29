@@ -8,13 +8,9 @@
 
 #include "lexer.h"
 
-int lexer_init (struct lexer *o, char *buf, size_t len)
+void lexer_init (struct lexer *o, const char *buf)
 {
-	if (buf[len] != '\0')
-		return 0;
-
 	o->start = o->stop = buf;
-	return 1;
 }
 
 #define HEAD		(*o->stop)

@@ -12,11 +12,10 @@
 #include <stddef.h>
 
 struct lexer {
-	char *start, *stop;	/* matched item */
+	const char *start, *stop;  /* matched item */
 };
 
-/* null-terminated string buffer, len = strlen (buf) */
-int lexer_init (struct lexer *o, char *buf, size_t len);
+void lexer_init (struct lexer *o, const char *buf);
 int lexer_process (struct lexer *o);
 
 enum lexer_token {
