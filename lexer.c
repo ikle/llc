@@ -23,6 +23,9 @@ int lexer_process (struct lexer *o)
 {
 	o->start = o->stop;
 start:
+	if (HEAD == '\0')
+		GOT (EOI);
+
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
 		GOTO (space_1);
 

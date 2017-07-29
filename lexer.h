@@ -19,7 +19,8 @@ void lexer_init (struct lexer *o, const char *buf);
 int lexer_process (struct lexer *o);
 
 enum lexer_token {
-	LEXER_ERROR = 0,
+	LEXER_ERROR = -1,
+	LEXER_EOI,		/* end of input */
 	LEXER_SPACE,		/* [ \t\n]+ */
 	LEXER_ID,		/* [A-Za-z](-?[A-Za-z0-9])* */
 	LEXER_IS,		/* : */
