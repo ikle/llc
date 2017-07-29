@@ -65,6 +65,8 @@ x_term_1:
 }
 
 #ifndef NOGENERIC
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -118,8 +120,6 @@ int lexer_process (struct lexer *o)
 }
 
 #ifndef NOFILE
-
-#include <stdio.h>
 
 static int file_read (lexer_input_t *buf, size_t count, void *cookie)
 {
