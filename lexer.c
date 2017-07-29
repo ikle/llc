@@ -95,8 +95,7 @@ int lexer_file_process (struct lexer_file *o, FILE *f)
 
 	token = lexer_buf_process (&o->lexer);
 
-	if (token > LEXER_EOI ||
-	    (token == LEXER_EOI && feof (f)))
+	if (token > LEXER_EOI)
 		return token;
 
 	/* drop processed data */
@@ -104,8 +103,8 @@ int lexer_file_process (struct lexer_file *o, FILE *f)
 	memmove (o->buf, o->lexer.start, o->len);
 
 	len = fread (o->buf + o->len, 1, size - 1 - o->len, f);
-	if (ferror (f))
-		return LEXER_ERROR;
+	if (len == 0)
+		return feof (f) ? LEXER_EOI : LEXER_ERROR;
 
 	o->len += len;
 	o->buf[o->len] = '\0';
