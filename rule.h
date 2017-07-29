@@ -39,6 +39,11 @@ struct symbol {
 	struct rhs_seq seq;
 };
 
+static inline int symbol_is_terminal (struct symbol *o)
+{
+	return rhs_seq_is_empty (&o->seq);
+}
+
 /*
  * The grammar_lookup function lookups symbol name in the specified
  * grammar.
