@@ -85,21 +85,20 @@ void grammar_fini (struct grammar *o)
  * Returns a pointer to the symbol in grammar or NULL in case of memory
  * allocation error.
  */
-struct symbol *grammar_lookup (struct grammar *rt, const char *name)
+struct symbol *grammar_lookup (struct grammar *o, const char *name)
 {
-	struct rb_tree *o = (void *) rt;
 	struct rb_node *n;
 	struct symbol fake, *s;
 
 	fake.name = (void *) name;
 
-	if ((n = rb_lookup (o, &fake)) != NULL)
+	if ((n = rb_lookup (o->set, &fake)) != NULL)
 		return rb_data (n);
 
 	if ((s = symbol_alloc (name)) == NULL)
 		goto no_symbol;
 
-	if ((n = rb_insert (o, s)) == NULL)
+	if ((n = rb_insert (o->set, s)) == NULL)
 		goto no_insert;
 
 	return rb_data (n);
