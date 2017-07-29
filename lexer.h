@@ -11,12 +11,12 @@
 
 #include <stddef.h>
 
-struct lexer {
+struct lexer_buf {
 	const char *start, *stop;  /* matched item */
 };
 
-void lexer_init (struct lexer *o, const char *buf);
-int lexer_process (struct lexer *o);
+void lexer_buf_init (struct lexer_buf *o, const char *buf);
+int  lexer_buf_process (struct lexer_buf *o);
 
 enum lexer_token {
 	LEXER_ERROR = -1,
@@ -32,7 +32,7 @@ enum lexer_token {
 #include <stdio.h>
 
 struct lexer_file {
-	struct lexer lexer;
+	struct lexer_buf lexer;
 	char *buf;
 	size_t len;
 };

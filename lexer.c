@@ -8,7 +8,7 @@
 
 #include "lexer.h"
 
-void lexer_init (struct lexer *o, const char *buf)
+void lexer_buf_init (struct lexer_buf *o, const char *buf)
 {
 	o->start = o->stop = buf;
 }
@@ -19,7 +19,7 @@ void lexer_init (struct lexer *o, const char *buf)
 #define NEXT		do { ++o->stop;			} while (0)
 #define GOTO(label)	do { NEXT; goto x_ ## label;	} while (0)
 
-int lexer_process (struct lexer *o)
+int lexer_buf_process (struct lexer_buf *o)
 {
 	o->start = o->stop;
 start:
@@ -78,7 +78,7 @@ int lexer_file_init (struct lexer_file *o)
 
 	o->len = 0;
 	o->buf[o->len] = '\0';
-	lexer_init (&o->lexer, o->buf);
+	lexer_buf_init (&o->lexer, o->buf);
 
 	return 1;
 }
@@ -93,7 +93,7 @@ int lexer_file_process (struct lexer_file *o, FILE *f)
 	int token;
 	size_t len;
 
-	token = lexer_process (&o->lexer);
+	token = lexer_buf_process (&o->lexer);
 
 	if (token > LEXER_EOI ||
 	    (token == LEXER_EOI && feof (f)))
@@ -109,9 +109,9 @@ int lexer_file_process (struct lexer_file *o, FILE *f)
 
 	o->len += len;
 	o->buf[o->len] = '\0';
-	lexer_init (&o->lexer, o->buf);
+	lexer_buf_init (&o->lexer, o->buf);
 
-	return lexer_process (&o->lexer);
+	return lexer_buf_process (&o->lexer);
 }
 
 #endif  /* NOFILE */
