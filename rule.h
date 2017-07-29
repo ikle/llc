@@ -45,13 +45,13 @@ static inline int symbol_is_terminal (struct symbol *o)
 }
 
 /*
- * The grammar_lookup function lookups symbol name in the specified
+ * The grammar_add function lookups symbol name in the specified
  * grammar.
  *
  * Returns a pointer to the symbol in grammar or NULL in case of memory
  * allocation error.
  */
-struct symbol *grammar_lookup (struct grammar *o, const char *name);
+struct symbol *grammar_add (struct grammar *o, const char *name);
 
 /*
  * The rhs_symbol_add function allocates new RHS symbol and insert it
