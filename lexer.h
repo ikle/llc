@@ -35,11 +35,13 @@ struct lexer_file {
 	struct lexer_buf lexer;
 	char *buf;
 	size_t len;
+	void *cookie;
+	int (*read) (char *buf, size_t size, void *cookie);
 };
 
-int  lexer_file_init (struct lexer_file *o);
+int  lexer_file_init (struct lexer_file *o, FILE *f);
 void lexer_file_fini (struct lexer_file *o);
-int  lexer_file_process (struct lexer_file *o, FILE *f);
+int  lexer_file_process (struct lexer_file *o);
 
 #endif  /* NOFILE */
 
