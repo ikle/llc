@@ -20,15 +20,12 @@ int lexer_init (struct lexer *o, char *buf, size_t len)
 #define HEAD		(*o->stop)
 #define GOT(token)	do { return LEXER_ ## token;		} while (0)
 #define IGNORE		do { goto start;			} while (0)
-#define CHECK		do { if (HEAD == '\0') GOT (ERROR);	} while (0)
-#define NEXT		do { ++o->stop; CHECK;			} while (0)
+#define NEXT		do { ++o->stop;				} while (0)
 #define GOTO(label)	do { NEXT; goto label;			} while (0)
 
 int lexer_process (struct lexer *o)
 {
 	o->start = o->stop;
-
-	CHECK;
 start:
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
 		GOTO (SPACE_1);
