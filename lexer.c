@@ -21,7 +21,6 @@ int lexer_init (struct lexer *o, char *buf, size_t len)
 #define GOT(token)	do { return LEXER_ ## token;		} while (0)
 #define CHECK		do { if (HEAD == '\0') GOT (ERROR);	} while (0)
 #define NEXT		do { ++o->stop; CHECK;			} while (0)
-#define ACCEPT(token)	do { NEXT; GOT (token);			} while (0)
 #define GOTO(label)	do { NEXT; goto label;			} while (0)
 
 int lexer_process (struct lexer *o)
@@ -37,13 +36,13 @@ int lexer_process (struct lexer *o)
 		GOTO (ID_1);
 
 	if (HEAD ==  ':')
-		ACCEPT (IS);
+		GOTO (IS_1);
 
 	if (HEAD == '|')
-		ACCEPT (OR);
+		GOTO (OR_1);
 
 	if (HEAD == ';')
-		ACCEPT (TERM);
+		GOTO (TERM_1);
 
 	GOT (ERROR);
 SPACE_1:
@@ -60,4 +59,10 @@ ID_1:
 		GOTO (ID_1);
 
 	GOT (ID);
+IS_1:
+	GOT (IS);
+OR_1:
+	GOT (OR);
+TERM_1:
+	GOT (TERM);
 }
