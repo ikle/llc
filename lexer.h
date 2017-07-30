@@ -21,9 +21,7 @@ void lexer_buf_init (struct lexer_buf *o, const lexer_input_t *buf);
 int  lexer_buf_process (struct lexer_buf *o);
 
 enum lexer_token {
-	LEXER_ERROR = -1,
-	LEXER_EOI,		/* end of input */
-	LEXER_SPACE,		/* [ \t\n]+ */
+	LEXER_SPACE = 1,	/* [ \t\n]+ */
 	LEXER_ID,		/* [A-Za-z](-?[A-Za-z0-9])* */
 	LEXER_IS,		/* : */
 	LEXER_OR,		/* | */

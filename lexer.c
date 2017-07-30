@@ -24,7 +24,7 @@ int lexer_buf_process (struct lexer_buf *o)
 	o->start = o->stop;
 start:
 	if (HEAD == '\0')
-		GOT (EOI);
+		return 0;
 
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
 		GOTO (space_1);
@@ -41,7 +41,7 @@ start:
 	if (HEAD == ';')
 		GOTO (term_1);
 
-	GOT (ERROR);
+	return -1;
 x_space_1:
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
 		GOTO (space_1);
@@ -99,7 +99,7 @@ int lexer_process (struct lexer *o)
 
 	token = lexer_buf_process (&o->lexer);
 
-	if (token > LEXER_EOI)
+	if (token > 0)
 		return token;
 
 	/* drop processed data */
@@ -107,10 +107,8 @@ int lexer_process (struct lexer *o)
 	memmove (o->buf, o->lexer.start, o->len);
 
 	len = o->read (o->buf + o->len, count - 1 - o->len, o->cookie);
-	if (len == 0)
-		return LEXER_EOI;
-	else if (len < 0)
-		return LEXER_ERROR;
+	if (len <= 0)
+		return len;
 
 	o->len += len;
 	o->buf[o->len] = '\0';
