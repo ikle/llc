@@ -25,7 +25,7 @@ static inline void type##_seq_init (struct type##_seq *s)		\
 	s->tail = &s->head;						\
 }									\
 									\
-void inline type##_seq_fini (struct type##_seq *s,			\
+static void inline type##_seq_fini (struct type##_seq *s,		\
 			     void (*f) (struct type *))			\
 {									\
 	struct type *i, *next;						\
