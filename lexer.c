@@ -31,7 +31,7 @@ int lexer_buf_process (struct lexer_buf *o, union lexer_type *value)
 {
 	o->start = o->stop;
 start:
-	if (HEAD == '\0')
+	if (HEAD == 0)
 		return 0;
 
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
