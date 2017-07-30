@@ -11,7 +11,7 @@
 comment*
 	: '#' [^\n]*
 space*	: [ \t\n]+ ;
-id	: [A-Za-z] ('-'? [A-Za-z0-9])* ;
+id	: [A-Za-z] ('-'? [A-Za-z0-9])* { value->symbol = grammar_add (o->grammar, data); } ;
 is	: ':' ;
 or	: '|' ;
 term	: ';' ;
