@@ -34,6 +34,9 @@ start:
 	if (HEAD == 0)
 		return 0;
 
+	if (HEAD == '#')
+		GOTO (comment_1);
+
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
 		GOTO (space_1);
 
@@ -50,6 +53,11 @@ start:
 		GOTO (term_1);
 
 	return -1;
+x_comment_1:
+	if (HEAD != 0 && HEAD != '\n')
+		GOTO (comment_1);
+
+	IGNORE;
 x_space_1:
 	if (HEAD == ' ' || HEAD == '\t' || HEAD == '\n')
 		GOTO (space_1);

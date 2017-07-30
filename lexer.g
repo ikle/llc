@@ -8,6 +8,8 @@
 % type    { struct symbol *symbol;   }
 % context { struct grammar *grammar; }
 
+comment*
+	: '#' [^\n]*
 space*	: [ \t\n]+ ;
 id	: [A-Za-z] ('-'? [A-Za-z0-9])* ;
 is	: ':' ;
