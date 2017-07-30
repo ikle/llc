@@ -38,7 +38,7 @@ enum lexer_token {
 typedef int lexer_read_fn (lexer_input_t *buf, size_t count, void *cookie);
 
 struct lexer {
-	struct lexer_buf lexer;
+	struct lexer_buf lexer_buf;
 	lexer_input_t *buf;
 	size_t len;
 	void *cookie;

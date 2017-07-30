@@ -88,7 +88,7 @@ int lexer_init (struct lexer *o, void *cookie, lexer_read_fn *read)
 
 	o->len = 0;
 	o->buf[o->len] = '\0';
-	lexer_buf_init (&o->lexer, o->buf);
+	lexer_buf_init (&o->lexer_buf, o->buf);
 
 	o->cookie = cookie;
 	o->read = read;
@@ -106,14 +106,14 @@ int lexer_process (struct lexer *o, union lexer_type *value)
 	int token;
 	size_t len;
 
-	token = lexer_buf_process (&o->lexer, value);
+	token = lexer_buf_process (&o->lexer_buf, value);
 
 	if (token > 0)
 		return token;
 
 	/* drop processed data */
-	o->len = (o->buf + o->len) - o->lexer.start;
-	memmove (o->buf, o->lexer.start, o->len);
+	o->len = (o->buf + o->len) - o->lexer_buf.start;
+	memmove (o->buf, o->lexer_buf.start, o->len);
 
 	len = o->read (o->buf + o->len, count - 1 - o->len, o->cookie);
 	if (len <= 0)
@@ -121,9 +121,9 @@ int lexer_process (struct lexer *o, union lexer_type *value)
 
 	o->len += len;
 	o->buf[o->len] = '\0';
-	lexer_buf_init (&o->lexer, o->buf);
+	lexer_buf_init (&o->lexer_buf, o->buf);
 
-	return lexer_buf_process (&o->lexer, value);
+	return lexer_buf_process (&o->lexer_buf, value);
 }
 
 #ifndef NOFILE
