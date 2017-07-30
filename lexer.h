@@ -10,15 +10,21 @@
 #define LEXER_H  1
 
 #include <stddef.h>
+#include "rule.h"
 
 typedef char lexer_input_t;
 
+union lexer_type {
+	struct symbol *symbol;
+};
+
 struct lexer_buf {
 	const lexer_input_t *start, *stop;  /* matched item */
+	struct grammar *grammar;
 };
 
 void lexer_buf_init (struct lexer_buf *o, const lexer_input_t *buf);
-int  lexer_buf_process (struct lexer_buf *o);
+int  lexer_buf_process (struct lexer_buf *o, union lexer_type *value);
 
 enum lexer_token {
 	LEXER_SPACE = 1,	/* [ \t\n]+ */
@@ -41,7 +47,7 @@ struct lexer {
 
 int  lexer_init (struct lexer *o, void *cookie, lexer_read_fn *read);
 void lexer_fini (struct lexer *o);
-int  lexer_process (struct lexer *o);
+int  lexer_process (struct lexer *o, union lexer_type *value);
 
 #ifndef NOFILE
 #include <stdio.h>

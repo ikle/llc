@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#include <string.h>
 #include "lexer.h"
 
 void lexer_buf_init (struct lexer_buf *o, const lexer_input_t *buf)
@@ -19,7 +20,14 @@ void lexer_buf_init (struct lexer_buf *o, const lexer_input_t *buf)
 #define NEXT		do { ++o->stop;			} while (0)
 #define GOTO(label)	do { NEXT; goto x_ ## label;	} while (0)
 
-int lexer_buf_process (struct lexer_buf *o)
+#define DEFINE_DATA							\
+	const size_t len = o->stop - o->start;				\
+	lexer_input_t data[len + 1];					\
+									\
+	memcpy (data, o->start, len * sizeof (lexer_input_t));		\
+	data[len] = 0
+
+int lexer_buf_process (struct lexer_buf *o, union lexer_type *value)
 {
 	o->start = o->stop;
 start:
@@ -55,6 +63,8 @@ x_id_1:
 	    (HEAD >= '0' && HEAD <= '9'))
 		GOTO (id_1);
 
+	{ DEFINE_DATA; value->symbol = grammar_add (o->grammar, data); }
+
 	GOT (ID);
 x_is_1:
 	GOT (IS);
@@ -68,7 +78,6 @@ x_term_1:
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 static const size_t count = BUFSIZ / sizeof (lexer_input_t);
 
@@ -92,12 +101,12 @@ void lexer_fini (struct lexer *o)
 	free (o->buf);
 }
 
-int lexer_process (struct lexer *o)
+int lexer_process (struct lexer *o, union lexer_type *value)
 {
 	int token;
 	size_t len;
 
-	token = lexer_buf_process (&o->lexer);
+	token = lexer_buf_process (&o->lexer, value);
 
 	if (token > 0)
 		return token;
@@ -114,7 +123,7 @@ int lexer_process (struct lexer *o)
 	o->buf[o->len] = '\0';
 	lexer_buf_init (&o->lexer, o->buf);
 
-	return lexer_buf_process (&o->lexer);
+	return lexer_buf_process (&o->lexer, value);
 }
 
 #ifndef NOFILE
