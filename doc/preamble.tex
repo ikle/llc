@@ -1,0 +1,97 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{polyglossia}			% miltilanguage make-up
+\setdefaultlanguage{english}			% primary document language
+\setotherlanguage[spelling=modern]{russian}	% secondary document language
+
+\defaultfontfeatures{Ligatures={TeX,Historic}}	% default font properties
+
+% Liberation — w/o accents, transcription
+% PT — w/o greek, transcription
+% FreeSerif — w/o hintings, poor quality
+
+%\setmainfont[Ligatures={TeX,Historic}]{Liberation Serif}
+%\setsansfont{Liberation Sans}
+
+\setmainfont{PT Serif}
+\setsansfont{PT Sans}
+\setmonofont{PT Mono}
+
+% substitute missed chars
+\usepackage{newunicodechar}
+\newfontfamily{\missed}{Liberation Sans}
+
+\newunicodechar{↔}{{\missed{↔}}}
+\newunicodechar{→}{{\missed{→}}}
+
+% page margins
+\usepackage{geometry}
+\geometry{a4paper, margin=2cm, inner=3cm, includehead, includefoot}
+
+% sections
+\let\stdsection\section
+%\renewcommand\section{\newpage\stdsection}
+
+% paragraph
+\usepackage{indentfirst}
+\parindent=1.5em
+\parskip=0.25em
+
+% prevent widows and orphans
+\widowpenalty=10000
+\clubpenalty=10000
+
+% math symbols and helpers
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+% text alignment
+\usepackage{ragged2e}
+
+% for enumitem
+\usepackage{enumitem}
+\setlist{topsep=0em, parsep=0.125em, itemsep=0em}
+
+% tables
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{tabu}
+
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+
+\renewcommand{\arraystretch}{1.4}
+
+% description
+\usepackage{mdwlist}
+
+% images
+\usepackage{graphicx}
+
+\newcommand{\pic}[1]{%
+%рис.~\ref{fig:#1}%
+pic.~\ref{fig:#1}%
+\begin{figure}[h]%
+\includegraphics[width=\textwidth]{#1}%
+\caption{}%
+\label{fig:#1}%
+\end{figure}%
+}
+
+% color links
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks = true,
+	urlcolor   = blue,
+	linkcolor  = blue,
+	citecolor  = blue,
+}
+
+% header and footer
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\leftmark}
+\fancyfoot[LE,RO]{\thepage}
+
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}

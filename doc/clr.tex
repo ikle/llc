@@ -1,0 +1,197 @@
+\include{preamble}
+
+\title{Infinite Alphabet Parsing \\ and \\ Compact LR Parser}
+\date{July 30, 2017}
+\author{Alexei A. Smekalkine <ikle@ikle.ru>}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article describes generalization of well-known shift-reduce
+parsing techniques to infinite input alphabet and compact LR parser
+generator based on this generalization.
+\end{abstract}
+
+\section{Base Definitions}
+\def\A{\mathcal{A}}
+\def\G{\mathcal{G}}
+\def\P{\mathcal{P}}
+
+\begin{enumerate}
+\item	Let the alphabet $\A$ be a possibly infinite set of terminal
+	symbols. We will use lower case Latin letters represented by a
+	normal font to denote terminals from other symbols.
+
+\item	Let the generator grammar $\G$ be a non-empty set of generator
+	rules of the form $A \rightarrow \P$ where:
+	\begin{itemize}
+	\item	$A$ is non-terminal symbol. We will use upper case
+		Latin letters represented by a normal font to denote
+		non-terminals.
+
+	\item	$\P$ is the production of rule defined below.
+	\end{itemize}
+
+\item	Let $\alpha$ be a possibly empty sequence of symbols, terminals
+	and non-terminals, and $|\alpha|$ be the lenght of this sequence.
+	We will use lower case Greek letters represented by a normal
+	font to denote such sequences.
+
+\item	Let $\P = \alpha$ be a production of a rule.
+\end{enumerate}
+
+\section{Look-Ahead}
+\def\L{\mathcal{L}}
+\def\F{\mathcal{F}}
+\def\e{\varepsilon}
+\def\J{\mathcal{J}}
+
+The look ahead is a possibly empty sequence of input symbols (terminals)
+that used together with DFA state to resolve conflicts with next state
+decision while parsing.
+
+\begin{enumerate}
+
+\item	Let $\L_n$ be look-ahead set of sequences of length upto $n$.
+
+\item	Let $\F_n(\alpha)$ be a set of a prefixes of length upto $n$ of
+	sequences of terminals that can be derived from production
+	$\alpha$. The special marker $\e$ denotes empty prefix, $|\e| = 0$.
+
+	$$
+	\F_0(\alpha) = \emptyset
+	$$
+
+	$$
+	\F_1(\alpha) =
+	\begin{cases}
+		\{ \e \},	& \text{if } |\alpha| = 0		\\
+		\{ a  \},	& \text{if } \alpha = a \beta		\\
+		\F_1(B),	& \text{if }
+			\alpha = B \beta \wedge \e \not \in \F_1(B)	\\
+		\F_1(B) \cup \F_n(\beta),
+				& \text{otherwise}
+	\end{cases}
+	$$
+
+	where
+
+	$$
+	\F_n(B) = \bigcup_{\forall i \wedge A_i = B} \F_n(P_i)
+	$$
+
+	Note, we omit now general case for $n > 1$ for simplicity.
+%	this will be defined later.
+\end{enumerate}
+
+\section{Item Sets}
+\def\I{\mathcal{I}}
+\def\S{\mathcal{S}}
+\def\G{\mathcal{G}}
+
+\begin{enumerate}
+\item   Let $\I_{n,i,j,k}$ be the item number $j$ of the rule
+	$A_i \rightarrow \P_i$ augmented with a look ahead set
+	$\L_n(k,A_i)$ for the state $k$:
+
+	$$
+	\I_{n,i,j,k} = [ A_i \rightarrow \alpha \bullet \beta, \L_n(k,A_i) ]
+	$$
+
+	where $\alpha \beta = \P_i$, $|\alpha| = j$. We can read $j$ as
+	the position of a marker $\bullet$ in the production $\P_i$.
+
+\item	Let $\S_k(B,\G)$ be the start set of items for not-terminal $B$
+	on the generator look ahead set $\G$ for state number $k$:
+
+	$$
+	\S_k(B,\G) = \{ \I_{i,0,k} | \forall i \wedge A_i = B \}
+	$$
+
+	where
+
+	$$
+	\L_0(k,B) = \emptyset
+	$$
+
+	$$
+	\L_1(k,B) =
+	\begin{cases}
+		\F_1(B), & \text{if } \e \not \in \F_1(B) \\
+		\F_1(B) \setminus \{ \e \} \cup \G, & \text{otherwise}
+	\end{cases}
+	$$
+
+\item	Let $\I_{n,i,j,k}^*(\G)$ be the closure of the item $\I_{n,i,j,k}$
+	on the generator look ahead set $\G$:
+
+	$$
+	\I_{n,i,j,k}^*(\G) =
+	\begin{cases}
+	\{ \I_{n,i,j,k} \} \cup \S_k(B,\G)^* \text, &
+		\text{if } P_i = \alpha \bullet B \beta \\
+	\{ \I_{n,i,j,k} \} \text, & \text{othewise}
+	\end{cases}
+	$$
+
+	where
+
+	$$
+	\S_k(B,\G)^* = \bigcup_{\I \in \S_k(B,\G)} \I^*(\G)
+	$$
+\end{enumerate}
+
+\section{State}
+\def\C{\mathcal{C}}
+\def\eoi{\text{\$}}
+
+\begin{enumerate}
+\item	Let the core $\C_k$ for the state number $k$ be a set of items.
+
+\item	Let $\C_k^*$ be the closure of the core $\C_k$
+
+	$$
+	\C_k^* = \bigcup_{\I \in C_k} \I^*
+	$$
+
+\item	Let start state number $0$ be identified by $\C_0^*$ where
+
+	$$
+	\C_0 = \I_{n,0,0,0} \text{ and }
+	\L_n(0,A_0) = \{ \eoi \} \text{ for } n > 0
+	$$
+
+	where $\eoi$ is a special end-of-input terminal.
+\end{enumerate}
+
+\iffalse
+\section{draft}
+	blalba: and for $k > 1$
+
+	$$
+	\F_k(\alpha) =
+	\begin{cases}
+		\J_k(B, \beta),	& \text{if }
+			\alpha = B \beta \wedge \e \not \in \F_1(B)	\\
+		\J_k(B, \beta) \cup \F_k(\beta),
+				& \text{if }
+			\alpha = B \beta \wedge \e      \in \F_1(B)
+	\end{cases}
+	$$
+
+	where
+
+	$$
+	\J_k(B, \beta) = \{ a \alpha | a \in \F_1(B) \wedge \alpha \in \F_{k-1}(\beta) \}
+	$$
+
+	blabla:
+	$$
+	\F_k(B) = \bigcup_{\forall A_i = B \wedge \{ l | l \in \L(state) \}}
+		\F_k(\P_i || l)
+	$$
+\fi
+
+\end{document}
