@@ -26,3 +26,5 @@ libparser.a: $(OBJECTS)
 	$(RANLIB) $@
 
 $(TESTS): libparser.a
+
+test: $(TESTS)
