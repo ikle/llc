@@ -92,17 +92,19 @@ static int resize (struct ht *ht)
 
 int ht_insert (struct ht *ht, void *o)
 {
-	size_t i = ht_lookup (ht, o);
+	size_t i;
+
+	if (!resize (ht))
+		return 0;
+
+	i = ht_lookup (ht, o);
 
 	if (ht->table[i] != NULL) {
 		errno = EEXIST;
 		return 0;
 	}
 
-	if (!resize (ht))
-		return 0;
-
 	++ht->count;
-	ht->table[ht_lookup (ht, o)] = o;
+	ht->table[i] = o;
 	return 1;
 }
