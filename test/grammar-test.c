@@ -61,9 +61,21 @@ no_rule:
 	return 0;
 }
 
+static void print_rule (const struct rule *r)
+{
+	size_t i;
+
+	printf ("%s ->", r->nt->name);
+
+	for (i = 0; r->prod[i] != NULL; ++i)
+		printf (" %s", r->prod[i]->name);
+
+	printf ("\n");
+}
+
 static void print_grammar (struct grammar *o)
 {
-	size_t i, j, k;
+	size_t i, j;
 	const struct symbol *s;
 	struct rule *r;
 
@@ -72,14 +84,8 @@ static void print_grammar (struct grammar *o)
 	for (i = 0; i < o->symbols.size; ++i)
 		if ((s = o->symbols.table[i]) != NULL && s->rules != NULL)
 			for (j = 0; j < s->rules->size; ++j)
-				if ((r = s->rules->table[j]) != NULL) {
-					printf ("%s ->", r->nt->name);
-
-					for (k = 0; r->prod[k] != NULL; ++k)
-						printf (" %s", r->prod[k]->name);
-
-					printf ("\n");
-				}
+				if ((r = s->rules->table[j]) != NULL)
+					print_rule (r);
 }
 
 int main (int argc, char *argv[])
