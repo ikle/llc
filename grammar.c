@@ -158,7 +158,7 @@ const char *grammar_add_name (struct grammar *o, const char *name)
 	const char *n;
 	char *copy;
 
-	if ((n = o->names.table[ht_lookup (&o->names, name)]) != NULL)
+	if ((n = ht_lookup (&o->names, name)) != NULL)
 		return n;
 
 	if ((copy = strdup (name)) == NULL)
@@ -178,8 +178,8 @@ struct symbol *grammar_add_symbol (struct grammar *o, const char *name)
 {
 	struct symbol *s, fake;
 
-	if ((fake.name = o->names.table[ht_lookup (&o->names, name)]) != NULL &&
-	    (s = o->symbols.table[ht_lookup (&o->symbols, &fake)]) != NULL)
+	if ((fake.name = ht_lookup (&o->names, name)) != NULL &&
+	    (s = ht_lookup (&o->symbols, &fake)) != NULL)
 		return s;
 
 	if ((name = grammar_add_name (o, name)) == NULL)

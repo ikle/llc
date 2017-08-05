@@ -64,9 +64,14 @@ static size_t get_slot (const struct data_type *type, size_t size,
 	return i;
 }
 
-size_t ht_lookup (struct ht *ht, const void *o)
+size_t ht_index (struct ht *ht, const void *o)
 {
 	return get_slot (ht->type, ht->size, ht->table, o);
+}
+
+void *ht_lookup (struct ht *ht, const void *o)
+{
+	return ht->table[ht_index (ht, o)];
 }
 
 static int resize (struct ht *ht)
@@ -100,7 +105,7 @@ int ht_insert (struct ht *ht, void *o)
 	if (!resize (ht))
 		return 0;
 
-	i = ht_lookup (ht, o);
+	i = ht_index (ht, o);
 
 	if (ht->table[i] != NULL) {
 		errno = EEXIST;

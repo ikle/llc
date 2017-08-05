@@ -22,7 +22,8 @@ struct ht {
 int  ht_init (struct ht *ht, const struct data_type *type);
 void ht_fini (struct ht *ht);
 
-size_t ht_lookup (struct ht *ht, const void *o);
+size_t ht_index (struct ht *ht, const void *o);
+void *ht_lookup (struct ht *ht, const void *o);
 int ht_insert (struct ht *ht, void *o);
 
 #endif  /* DATA_HT_H */
