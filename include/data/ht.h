@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#ifndef HT_H
-#define HT_H  1
+#ifndef DATA_HT_H
+#define DATA_HT_H  1
 
 #include <stddef.h>
 
@@ -31,4 +31,4 @@ void ht_fini (struct ht *ht);
 size_t ht_lookup (struct ht *ht, const void *o);
 int ht_insert (struct ht *ht, void *o);
 
-#endif  /* HT_H */
+#endif  /* DATA_HT_H */
