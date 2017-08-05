@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bitset.h"
+#include <data/bitset.h>
 
 int bitset_is_member (const struct bitset *o, size_t x)
 {
