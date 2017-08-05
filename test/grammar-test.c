@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include <cfg/grammar.h>
+#include <cfg/grammar-show.h>
 
 const char *r0[] = { "S", "E", NULL };
 const char *r1[] = { "E", "T", NULL };
@@ -61,40 +62,6 @@ no_rule:
 	return 0;
 }
 
-static void print_rule (const struct rule *r)
-{
-	size_t i;
-
-	printf ("%s ->", r->nt->name);
-
-	for (i = 0; r->prod[i] != NULL; ++i)
-		printf (" %s", r->prod[i]->name);
-
-	printf ("\n");
-}
-
-static void print_symbol (const struct symbol *s)
-{
-	size_t i;
-	const struct rule *r;
-
-	for (i = 0; i < s->rules->size; ++i)
-		if ((r = s->rules->table[i]) != NULL)
-			print_rule (r);
-}
-
-static void print_grammar (const struct grammar *o)
-{
-	size_t i;
-	const struct symbol *s;
-
-	printf ("start symbol: %s\n", o->start->name);
-
-	for (i = 0; i < o->symbols.size; ++i)
-		if ((s = o->symbols.table[i]) != NULL && s->rules != NULL)
-			print_symbol (s);
-}
-
 int main (int argc, char *argv[])
 {
 	struct grammar g;
@@ -105,7 +72,7 @@ int main (int argc, char *argv[])
 	if (!load_grammar (&g, G))
 		err (1, "cannot load grammar");
 
-	print_grammar (&g);
+	grammar_show (&g, stdout);
 	grammar_fini (&g);
 	return 0;
 }
