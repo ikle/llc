@@ -38,7 +38,7 @@ struct symbol {
  */
 
 struct rule {
-	const struct symbol *nt;
+	struct symbol *nt;
 	const struct symbol *prod[1];  /* NULL-terminated sequence */
 };
 
