@@ -26,6 +26,9 @@ void da_fini (struct da *da)
 {
 	size_t i;
 
+	if (da->type == NULL || da->type->free == NULL)
+		return;
+
 	for (i = 0; i < da->count; ++i)
 		da->type->free (da->table[i]);
 }

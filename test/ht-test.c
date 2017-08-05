@@ -18,15 +18,9 @@ static int str_eq (const void *a, const void *b)
 	return strcmp (a, b) == 0;
 }
 
-static void str_free (void *o)
-{
-	/* do nothing with static strings */
-}
-
 static const struct data_type str_type = {
 	.hash	= str_hash,
 	.eq	= str_eq,
-	.free	= str_free,
 };
 
 int main (int argc, char *argv[])
