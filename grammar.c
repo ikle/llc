@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "grammar.h"
+#include <cfg/grammar.h>
 
 /*
  * Grammar Name

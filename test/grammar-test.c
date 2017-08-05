@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../grammar.h"
+#include <cfg/grammar.h>
 
 const char *r0[] = { "S", "E", NULL };
 const char *r1[] = { "E", "T", NULL };
