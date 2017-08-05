@@ -10,7 +10,7 @@
 #define RULE_H  1
 
 #include "rb-tree.h"
-#include "seq.h"
+#include <data/seq.h>
 
 struct grammar {
 	struct rb_tree *set;	/* set of symbols          */
