@@ -73,19 +73,26 @@ static void print_rule (const struct rule *r)
 	printf ("\n");
 }
 
+static void print_symbol (const struct symbol *s)
+{
+	size_t i;
+	const struct rule *r;
+
+	for (i = 0; i < s->rules->size; ++i)
+		if ((r = s->rules->table[i]) != NULL)
+			print_rule (r);
+}
+
 static void print_grammar (struct grammar *o)
 {
-	size_t i, j;
+	size_t i;
 	const struct symbol *s;
-	struct rule *r;
 
 	printf ("start symbol: %s\n", o->start->name);
 
 	for (i = 0; i < o->symbols.size; ++i)
 		if ((s = o->symbols.table[i]) != NULL && s->rules != NULL)
-			for (j = 0; j < s->rules->size; ++j)
-				if ((r = s->rules->table[j]) != NULL)
-					print_rule (r);
+			print_symbol (s);
 }
 
 int main (int argc, char *argv[])
