@@ -29,7 +29,7 @@ size_t ht_hash (size_t hash, const void *data, size_t size)
 	return hash;
 }
 
-int ht_init (struct ht *ht, const struct ht_type *type)
+int ht_init (struct ht *ht, const struct data_type *type)
 {
 	ht->type  = type;
 	ht->count = 0;
@@ -46,7 +46,7 @@ void ht_fini (struct ht *ht)
 		ht->type->free (ht->table[i]);
 }
 
-static size_t get_slot (const struct ht_type *type, size_t size,
+static size_t get_slot (const struct data_type *type, size_t size,
 			void **table, const void *o)
 {
 	const size_t mask = size - 1;  /* size MUST be power of two */

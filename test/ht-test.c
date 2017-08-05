@@ -23,7 +23,7 @@ static void str_free (void *o)
 	/* do nothing with static strings */
 }
 
-static const struct ht_type str_type = {
+static const struct data_type str_type = {
 	.hash	= str_hash,
 	.eq	= str_eq,
 	.free	= str_free,
