@@ -12,7 +12,7 @@ void rule_show (const struct rule *r, FILE *f)
 {
 	size_t i;
 
-	fprintf (f, "%s ->", r->nt->name);
+	fprintf (f, "%s →", r->nt->name);
 
 	for (i = 0; r->prod[i] != NULL; ++i)
 		fprintf (f, " %s", r->prod[i]->name);
