@@ -83,7 +83,7 @@ static void print_symbol (const struct symbol *s)
 			print_rule (r);
 }
 
-static void print_grammar (struct grammar *o)
+static void print_grammar (const struct grammar *o)
 {
 	size_t i;
 	const struct symbol *s;
