@@ -9,7 +9,7 @@
 #ifndef RULE_H
 #define RULE_H  1
 
-#include "rb-tree.h"
+#include <data/rb-tree.h>
 #include <data/seq.h>
 
 struct grammar {
