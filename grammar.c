@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <data/atom.h>
 #include <data/hash.h>
 #include <data/string.h>
 
@@ -65,14 +66,14 @@ static int symbol_eq (const void *a, const void *b)
 	const struct symbol *p = a;
 	const struct symbol *q = b;
 
-	return p->name == q->name;
+	return atom_eq (p->name, q->name);
 }
 
 static size_t symbol_hash (const void *o)
 {
 	const struct symbol *s = o;
 
-	return hash (0, &s->name, sizeof (s->name));
+	return atom_hash (s->name);
 }
 
 static const struct data_type symbol_type = {
