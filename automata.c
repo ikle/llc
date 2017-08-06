@@ -75,7 +75,7 @@ struct state *state_alloc (void)
 	if ((o = malloc (sizeof (*o))) == NULL)
 		goto no_state;
 
-	if (!ht_init (&o->items, &item_type))
+	if (!ht_init (&o->items, &atom_type))
 		goto no_items;
 
 	if (!ht_init (&o->arrows, &arrow_type))
