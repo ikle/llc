@@ -45,12 +45,12 @@ static size_t get_slot (const struct data_type *type, size_t size,
 	return i;
 }
 
-size_t ht_index (struct ht *ht, const void *o)
+size_t ht_index (const struct ht *ht, const void *o)
 {
 	return get_slot (ht->type, ht->size, ht->table, o);
 }
 
-void *ht_lookup (struct ht *ht, const void *o)
+void *ht_lookup (const struct ht *ht, const void *o)
 {
 	return ht->table[ht_index (ht, o)];
 }
