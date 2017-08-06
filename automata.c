@@ -13,7 +13,7 @@
 #include <parser/automata.h>
 
 /*
- * Items
+ * Automata Item type
  */
 
 static int item_eq (const void *a, const void *b)
@@ -39,7 +39,7 @@ static const struct data_type item_type = {
 };
 
 /*
- * Arrow
+ * State Arrow type
  */
 
 static int arrow_eq (const void *a, const void *b)
