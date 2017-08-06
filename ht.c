@@ -38,7 +38,7 @@ size_t ht_hash (const void *o)
 	/* NOTE: we need to calculate order-independed hash from items */
 
 	for (state = 0, i = 0; i < p->count; ++i)
-		state += (size_t) p->table[i];
+		state += p->type->hash (p->table[i]);
 
 	return state;
 }
@@ -50,13 +50,14 @@ int ht_eq (const void *a, const void *b)
 	size_t i;
 	void *item;
 
-	if (p->count != q->count || ht_hash (p) != ht_hash (q))
+	if (p->count != q->count || p->type != q->type ||
+	    ht_hash (p) != ht_hash (q))
 		return 0;
 
 	/* got collision: lookup and compare */
 	for (i = 0; i < p->count; ++i)
 		if ((item = p->table[i]) != NULL &&
-		    ht_lookup (q, item) != item)
+		    !p->type->eq (item, ht_lookup (q, item)))
 			return 0;
 
 	return 1;
