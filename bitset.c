@@ -83,12 +83,10 @@ int bitset_join (struct bitset *o, const struct bitset *s)
 /* o = o \ s */
 int bitset_diff (struct bitset *o, const struct bitset *s)
 {
+	const size_t min = o->count < s->count ? o->count : s->count;
 	size_t i;
 
-	if (o->count < s->count && !bitset_prepare (o, s->count))
-			return 0;
-
-	for (i = 0; i < s->count; ++i)
+	for (i = 0; i < min; ++i)
 		o->set[i] &= ~s->set[i];
 
 	return 1;
