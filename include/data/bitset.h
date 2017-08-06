@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#ifndef BITSET_H
-#define BITSET_H  1
+#ifndef DATA_BITSET_H
+#define DATA_BITSET_H  1
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -42,4 +42,4 @@ int bitset_join (struct bitset *o, const struct bitset *s);
 /* o = o \ s */
 int bitset_diff (struct bitset *o, const struct bitset *s);
 
-#endif  /* BITSET_H */
+#endif  /* DATA_BITSET_H */
