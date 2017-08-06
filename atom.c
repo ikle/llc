@@ -18,3 +18,8 @@ size_t atom_hash (const void *o)
 {
 	return hash (0, &o, sizeof (o));
 }
+
+const struct data_type atom_type = {
+	.eq	= atom_eq,
+	.hash	= atom_hash,
+};

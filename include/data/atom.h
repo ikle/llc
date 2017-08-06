@@ -14,4 +14,6 @@
 int atom_eq (const void *a, const void *b);
 size_t atom_hash (const void *o);
 
+extern const struct data_type atom_type;
+
 #endif  /* DATA_ATOM_H */
