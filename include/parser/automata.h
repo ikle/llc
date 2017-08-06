@@ -26,7 +26,7 @@ struct arrow {
 
 /* state key = items */
 struct state {
-	struct ht items;   /* todo: ordered set of items */
+	struct ht items;   /* unordered set of items  */
 	struct ht arrows;  /* unordered set of arrows */
 };
 
