@@ -101,39 +101,19 @@ void state_free (void *o)
 	ht_fini (&s->arrows);
 }
 
-static size_t state_hash (const void *o);
-
 static int state_eq (const void *a, const void *b)
 {
 	const struct state *p = a;
 	const struct state *q = b;
-	size_t i;
-	struct item *item;
 
-	if (p->items.count != q->items.count ||
-	    state_hash (p) != state_hash (q))
-		return 0;
-
-	/* got collision: lookup and compare */
-	for (i = 0; i < p->items.count; ++i)
-		if ((item = p->items.table[i]) != NULL &&
-		    ht_lookup (&q->items, item) != item)
-			return 0;
-
-	return 1;
+	return ht_eq (&p->items, &q->items);
 }
 
 static size_t state_hash (const void *o)
 {
 	const struct state *p = o;
-	size_t state, i;
 
-	/* NOTE: we need to calculate order-independed hash from items */
-
-	for (state = 0, i = 0; i < p->items.count; ++i)
-		state += (size_t) p->items.table[i];
-
-	return state;
+	return ht_hash (&p->items);
 }
 
 static const struct data_type state_type = {
