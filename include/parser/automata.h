@@ -24,19 +24,19 @@ struct arrow {
 	const struct state *to;   /* owned by automata */
 };
 
+struct automata;
+
 /* state key = items */
 struct state {
+	struct automata *automata;  /* state owner */
 	struct ht items;   /* unordered set of items owned by automata */
 	struct ht arrows;  /* unordered set of arrows */
 };
 
-struct state *state_alloc (void);
+struct state *state_alloc (struct automata *a);
 void state_free (void *o);
 
-struct automata;
-
-int state_add_item (struct state *o, struct automata *a,
-		    const struct rule *rule, size_t pos);
+int state_add_item (struct state *o, const struct rule *rule, size_t pos);
 int state_add_arrow (struct state *o, const struct symbol *on,
 		     const struct state *to);
 

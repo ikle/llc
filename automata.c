@@ -68,7 +68,7 @@ static const struct data_type arrow_type = {
  * State
  */
 
-struct state *state_alloc (void)
+struct state *state_alloc (struct automata *a)
 {
 	struct state *o;
 
@@ -81,6 +81,7 @@ struct state *state_alloc (void)
 	if (!ht_init (&o->arrows, &arrow_type))
 		goto no_arrows;
 
+	o->automata = a;
 	return o;
 no_arrows:
 	ht_fini (&o->items);
@@ -122,12 +123,11 @@ static const struct data_type state_type = {
 	.hash	= state_hash,
 };
 
-int state_add_item (struct state *o, struct automata *a,
-		    const struct rule *rule, size_t pos)
+int state_add_item (struct state *o, const struct rule *rule, size_t pos)
 {
 	const struct item *item;
 
-	if ((item = automata_add_item (a, rule, pos)) == NULL)
+	if ((item = automata_add_item (o->automata, rule, pos)) == NULL)
 		return 0;
 
 	return 0;  /* todo */
