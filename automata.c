@@ -111,9 +111,15 @@ static int state_eq (const void *a, const void *b)
 
 static size_t state_hash (const void *o)
 {
-//	const struct state *p = o;
+	const struct state *p = o;
+	size_t state, i;
 
-	return 0;  /* todo */
+	/* NOTE: we need to calculate order-independed hash from items */
+
+	for (state = 0, i = 0; i < p->items.count; ++i)
+		state += (size_t) p->items.table[i];
+
+	return state;
 }
 
 static const struct data_type state_type = {
