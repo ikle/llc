@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <cfg/grammar-show.h>
+#include <parser/grammar-show.h>
 
 void rule_show (const struct rule *r, FILE *f)
 {

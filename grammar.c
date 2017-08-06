@@ -14,7 +14,7 @@
 #include <data/atom-seq.h>
 #include <data/string.h>
 
-#include <cfg/grammar.h>
+#include <parser/grammar.h>
 
 /*
  * Grammar Name

@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#ifndef CFG_GRAMMAR_SHOW_H
-#define CFG_GRAMMAR_SHOW_H  1
+#ifndef PARSER_GRAMMAR_SHOW_H
+#define PARSER_GRAMMAR_SHOW_H  1
 
 #include <stdio.h>
-#include <cfg/grammar.h>
+#include <parser/grammar.h>
 
 void rule_show    (const struct rule *r,    FILE *f);
 void symbol_show  (const struct symbol *s,  FILE *f);
 void grammar_show (const struct grammar *o, FILE *f);
 
-#endif  /* CFG_GRAMMAR_SHOW_H */
+#endif  /* PARSER_GRAMMAR_SHOW_H */

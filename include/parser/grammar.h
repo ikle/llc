@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#ifndef CFG_GRAMMAR_H
-#define CFG_GRAMMAR_H  1
+#ifndef PARSER_GRAMMAR_H
+#define PARSER_GRAMMAR_H  1
 
 #include <data/ht.h>
 
@@ -50,4 +50,4 @@ struct symbol *grammar_add_symbol (struct grammar *o, const char *name);
 
 int symbol_insert_rule (struct symbol *o, struct rule *rule);
 
-#endif  /* CFG_GRAMMAR_H */
+#endif  /* PARSER_GRAMMAR_H */
