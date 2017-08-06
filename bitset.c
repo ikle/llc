@@ -41,6 +41,11 @@ static int bitset_prepare (struct bitset *o, size_t count)
 	return 1;
 }
 
+static void bitset_shrink (struct bitset *o)
+{
+	for (; o->count > 0 && o->set[o->count - 1] == 0; --o->count) {}
+}
+
 /* o = o U {x} */
 int bitset_add (struct bitset *o, size_t x)
 {
@@ -64,6 +69,8 @@ void bitset_del (struct bitset *o, size_t x)
 
 	if (pos < o->count)
 		o->set[pos] &= ~(1 << bit);
+
+	bitset_shrink (o);
 }
 
 /* o = o U s */
@@ -89,5 +96,6 @@ int bitset_diff (struct bitset *o, const struct bitset *s)
 	for (i = 0; i < min; ++i)
 		o->set[i] &= ~s->set[i];
 
+	bitset_shrink (o);
 	return 1;
 }
