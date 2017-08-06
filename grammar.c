@@ -11,26 +11,18 @@
 #include <string.h>
 
 #include <data/hash.h>
+#include <data/string.h>
+
 #include <cfg/grammar.h>
 
 /*
  * Grammar Name
  */
 
-static int name_eq (const void *a, const void *b)
-{
-	return strcmp (a, b) == 0;
-}
-
-static size_t name_hash (const void *o)
-{
-	return hash (0, o, strlen (o));
-}
-
 static const struct data_type name_type = {
 	.free	= free,
-	.eq	= name_eq,
-	.hash	= name_hash,
+	.eq	= string_eq,
+	.hash	= string_hash,
 };
 
 /*
