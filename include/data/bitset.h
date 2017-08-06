@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <data/type.h>
 
 struct bitset {
 	size_t count;	/* number of allocated words */
@@ -27,6 +28,9 @@ static inline void bitset_fini (struct bitset *o)
 {
 	free (o->set);
 }
+
+int bitset_eq (const void *a, const void *b);
+size_t bitset_hash (const void *o);
 
 int bitset_is_member (const struct bitset *o, size_t x);
 

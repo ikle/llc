@@ -11,6 +11,25 @@
 #include <string.h>
 
 #include <data/bitset.h>
+#include <data/hash.h>
+
+int bitset_eq (const void *a, const void *b)
+{
+	const struct bitset *p = a;
+	const struct bitset *q = b;
+
+	if (p->count != q->count)
+		return 0;
+
+	return memcmp (p->set, q->set, p->count * sizeof (p->set[0])) == 0;
+}
+
+size_t bitset_hash (const void *o)
+{
+	const struct bitset *p = o;
+
+	return hash (0, p->set, p->count * sizeof (p->set[0]));
+}
 
 int bitset_is_member (const struct bitset *o, size_t x)
 {
