@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <data/hash.h>
 #include <cfg/grammar.h>
 
 /*
@@ -23,7 +24,7 @@ static int name_eq (const void *a, const void *b)
 
 static size_t name_hash (const void *o)
 {
-	return ht_hash (0, o, strlen (o));
+	return hash (0, o, strlen (o));
 }
 
 static const struct data_type name_type = {
@@ -79,7 +80,7 @@ static size_t symbol_hash (const void *o)
 {
 	const struct symbol *s = o;
 
-	return ht_hash (0, &s->name, sizeof (s->name));
+	return hash (0, &s->name, sizeof (s->name));
 }
 
 static const struct data_type symbol_type = {
@@ -113,12 +114,12 @@ static int rule_eq (const void *a, const void *b)
 static size_t rule_hash (const void *o)
 {
 	const struct rule *r = o;
-	size_t hash, i;
+	size_t h, i;
 
-	for (hash = 0, i = 0; r->prod[i] != NULL; ++i)
-		hash = ht_hash (hash, r->prod[i], sizeof (r->prod[0]));
+	for (h = 0, i = 0; r->prod[i] != NULL; ++i)
+		h = hash (h, r->prod[i], sizeof (r->prod[0]));
 
-	return hash;
+	return h;
 }
 
 static const struct data_type rule_type = {

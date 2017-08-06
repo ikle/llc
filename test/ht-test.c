@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <data/hash.h>
 #include <data/ht.h>
 
 static size_t str_hash (const void *o)
 {
 #if 1
-	return ht_hash (0, o, strlen (o));
+	return hash (0, o, strlen (o));
 #else
 	return *(const char *) o;  /* bad hash to test collisions */
 #endif

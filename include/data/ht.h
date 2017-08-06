@@ -11,8 +11,6 @@
 
 #include <data/type.h>
 
-size_t ht_hash (size_t hash, const void *data, size_t size);
-
 struct ht {
 	const struct data_type *type;
 	size_t count, size;
