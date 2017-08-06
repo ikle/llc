@@ -11,7 +11,7 @@
 #include <string.h>
 
 #include <data/atom.h>
-#include <data/hash.h>
+#include <data/atom-seq.h>
 #include <data/string.h>
 
 #include <cfg/grammar.h>
@@ -93,26 +93,17 @@ static int rule_eq (const void *a, const void *b)
 {
 	const struct rule *p = a;
 	const struct rule *q = b;
-	size_t i;
 
 	/* assert (p->nt == q->nt) */
 
-	for (i = 0; p->prod[i] != NULL; ++i)
-		if (p->prod[i] != q->prod[i])
-			return 0;
-
-	return q->prod[i] == NULL;
+	return atom_seq_eq (p->prod, q->prod);
 }
 
 static size_t rule_hash (const void *o)
 {
 	const struct rule *r = o;
-	size_t h, i;
 
-	for (h = 0, i = 0; r->prod[i] != NULL; ++i)
-		h = hash (h, r->prod[i], sizeof (r->prod[0]));
-
-	return h;
+	return atom_seq_hash (r->prod);
 }
 
 static const struct data_type rule_type = {
