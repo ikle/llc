@@ -50,11 +50,9 @@ int ht_eq (const void *a, const void *b)
 	size_t i;
 	void *item;
 
-	if (p->count != q->count || p->type != q->type ||
-	    ht_hash (p) != ht_hash (q))
+	if (p->count != q->count || p->type != q->type)
 		return 0;
 
-	/* got collision: lookup and compare */
 	for (i = 0; i < p->count; ++i)
 		if ((item = p->table[i]) != NULL &&
 		    !p->type->eq (item, ht_lookup (q, item)))
