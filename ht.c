@@ -37,7 +37,7 @@ size_t ht_hash (const void *o)
 
 	/* NOTE: we need to calculate order-independed hash from items */
 
-	for (state = 0, i = 0; i < p->count; ++i)
+	for (state = 0, i = 0; i < p->size; ++i)
 		state += p->type->hash (p->table[i]);
 
 	return state;
@@ -53,7 +53,7 @@ int ht_eq (const void *a, const void *b)
 	if (p->count != q->count || p->type != q->type)
 		return 0;
 
-	for (i = 0; i < p->count; ++i)
+	for (i = 0; i < p->size; ++i)
 		if ((item = p->table[i]) != NULL &&
 		    !p->type->eq (item, ht_lookup (q, item)))
 			return 0;
