@@ -130,7 +130,7 @@ int state_add_item (struct state *o, const struct rule *rule, size_t pos)
 	if ((item = automata_add_item (o->automata, rule, pos)) == NULL)
 		return 0;
 
-	return 0;  /* todo */
+	return ht_insert (&o->items, (void *) item);
 }
 
 int state_add_arrow (struct state *o, const struct symbol *on,
