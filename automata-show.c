@@ -10,7 +10,7 @@
 
 static void marker_show (FILE *f)
 {
-	fprintf (f, " ·");
+	fprintf (f, " •");
 }
 
 void item_show (const struct item *o, FILE *f)
