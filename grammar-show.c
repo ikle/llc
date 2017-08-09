@@ -25,9 +25,8 @@ void symbol_show (const struct symbol *s, FILE *f)
 	size_t i;
 	const struct rule *r;
 
-	for (i = 0; i < s->rules->size; ++i)
-		if ((r = s->rules->table[i]) != NULL)
-			rule_show (r, f);
+	ht_foreach (i, r, s->rules)
+		rule_show (r, f);
 }
 
 void grammar_show (const struct grammar *o, FILE *f)
@@ -37,7 +36,7 @@ void grammar_show (const struct grammar *o, FILE *f)
 
 	printf ("start symbol: %s\n", o->start->name);
 
-	for (i = 0; i < o->symbols.size; ++i)
-		if ((s = o->symbols.table[i]) != NULL && s->rules != NULL)
+	ht_foreach (i, s, &o->symbols)
+		if (s->rules != NULL)
 			symbol_show (s, f);
 }
