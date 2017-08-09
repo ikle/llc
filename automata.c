@@ -144,7 +144,7 @@ int state_add_arrow (struct state *o, const struct symbol *on,
 	if (!ht_insert (&o->arrows, a))
 		goto no_insert;
 
-	return 1;
+	return (a->to = state_alloc (o->automata)) != NULL;
 no_insert:
 	free (a);
 no_arrow:
