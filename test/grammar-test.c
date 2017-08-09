@@ -1,3 +1,11 @@
+/*
+ * Context-Free Grammar Test
+ *
+ * Copyright (c) 2017 Alexei A. Smekalkine
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
