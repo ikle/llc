@@ -36,9 +36,8 @@ void item_set_show (const struct ht *o, FILE *f)
 	size_t i;
 	const struct item *item;
 
-	for (i = 0; i < o->size; ++i)
-		if ((item = o->table[i]) != NULL)
-			item_show (item, f);
+	ht_foreach (i, item, o)
+		item_show (item, f);
 }
 
 void arrow_show (const struct arrow *o, FILE *f)
@@ -53,9 +52,8 @@ void arrow_set_show (const struct ht *o, FILE *f)
 	size_t i;
 	const struct arrow *a;
 
-	for (i = 0; i < o->size; ++i)
-		if ((a = o->table[i]) != NULL)
-			arrow_show (a, f);
+	ht_foreach (i, a, o)
+		arrow_show (a, f);
 }
 
 void state_show (const struct state *o, FILE *f)
@@ -73,7 +71,6 @@ void automata_show (const struct automata *o, FILE *f)
 	size_t i;
 	const struct state *s;
 
-	for (i = 0; i < o->states.size; ++i)
-		if ((s = o->states.table[i]) != NULL)
-			state_show (s, f);
+	ht_foreach (i, s, &o->states)
+		state_show (s, f);
 }
