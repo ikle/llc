@@ -27,4 +27,8 @@ size_t ht_index (const struct ht *ht, const void *o);
 void *ht_lookup (const struct ht *ht, const void *o);
 int ht_insert (struct ht *ht, void *o);
 
+#define ht_foreach(i, o, ht)				\
+	for (i = 0; i < (ht)->size; ++i)		\
+		if (((o) = (ht)->table[i]) != NULL)
+
 #endif  /* DATA_HT_H */
