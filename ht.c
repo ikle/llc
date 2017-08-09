@@ -53,9 +53,8 @@ int ht_eq (const void *a, const void *b)
 	if (p->count != q->count || p->type != q->type)
 		return 0;
 
-	for (i = 0; i < p->size; ++i)
-		if ((item = p->table[i]) != NULL &&
-		    !p->type->eq (item, ht_lookup (q, item)))
+	ht_foreach (i, item, p)
+		if (!p->type->eq (item, ht_lookup (q, item)))
 			return 0;
 
 	return 1;
@@ -99,9 +98,8 @@ static int resize (struct ht *ht)
 	if ((table = calloc (size, sizeof (table[0]))) == NULL)
 		return 0;
 
-	for (i = 0; i < ht->size; ++i)
-		if ((o = ht->table[i]) != NULL)
-			table[get_slot (ht->type, size, table, o)] = o;
+	ht_foreach (i, o, ht)
+		table[get_slot (ht->type, size, table, o)] = o;
 
 	free (ht->table);
 
