@@ -133,8 +133,7 @@ int state_add_item (struct state *o, const struct rule *rule, size_t pos)
 	return ht_insert (&o->items, (void *) item);
 }
 
-int state_add_arrow (struct state *o, const struct symbol *on,
-		     const struct state *to)
+int state_add_arrow (struct state *o, const struct symbol *on)
 {
 	struct arrow *a;
 
