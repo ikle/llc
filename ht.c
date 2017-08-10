@@ -33,12 +33,13 @@ void ht_fini (struct ht *ht)
 size_t ht_hash (const void *o)
 {
 	const struct ht *p = o;
-	size_t state, i;
+	size_t state = 0, i;
+	void *item;
 
 	/* NOTE: we need to calculate order-independed hash from items */
 
-	for (state = 0, i = 0; i < p->size; ++i)
-		state += p->type->hash (p->table[i]);
+	ht_foreach (i, item, p)
+		state += p->type->hash (item);
 
 	return state;
 }
