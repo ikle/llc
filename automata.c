@@ -47,15 +47,14 @@ static int arrow_eq (const void *a, const void *b)
 	const struct arrow *p = a;
 	const struct arrow *q = b;
 
-	return atom_eq (p->on, q->on) && atom_eq (p->to, q->to);
+	return atom_eq (p->on, q->on);
 }
 
 static size_t arrow_hash (const void *o)
 {
 	const struct arrow *p = o;
 
-	return hash (hash (0, &p->on, sizeof (p->on)),
-		     &p->to, sizeof (p->to));
+	return atom_hash (p->on);
 }
 
 static const struct data_type arrow_type = {
