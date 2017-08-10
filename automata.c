@@ -132,9 +132,12 @@ int state_add_item (struct state *o, const struct rule *rule, size_t pos)
 	return ht_insert (&o->items, (void *) item);
 }
 
-int state_add_arrow (struct state *o, const struct symbol *on)
+struct arrow *state_add_arrow (struct state *o, const struct symbol *on)
 {
-	struct arrow *a;
+	struct arrow fake = { on }, *a;
+
+	if ((a = ht_lookup (&o->arrows, &fake)) != NULL)
+		return a;
 
 	if ((a = malloc (sizeof (*a))) == NULL)
 		goto no_arrow;
@@ -144,11 +147,15 @@ int state_add_arrow (struct state *o, const struct symbol *on)
 	if (!ht_insert (&o->arrows, a))
 		goto no_insert;
 
-	return (a->to = state_alloc (o->automata)) != NULL;
+	if ((a->to = state_alloc (o->automata)) == NULL)
+		goto no_state;
+
+	return a;
+no_state:
 no_insert:
 	free (a);
 no_arrow:
-	return 0;
+	return NULL;
 }
 
 /*

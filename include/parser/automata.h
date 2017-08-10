@@ -37,7 +37,7 @@ struct state *state_alloc (struct automata *a);
 void state_free (void *o);
 
 int state_add_item (struct state *o, const struct rule *rule, size_t pos);
-int state_add_arrow (struct state *o, const struct symbol *on);
+struct arrow *state_add_arrow (struct state *o, const struct symbol *on);
 
 struct automata {
 	struct ht items;   /* unordered set of items  */
