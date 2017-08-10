@@ -6,7 +6,7 @@ CFLAGS = -Wall -O6 -I"$(CURDIR)"/include
 
 SOURCES = *.c
 OBJECTS = $(patsubst %.c,%.o, $(wildcard $(SOURCES)))
-TESTS = $(patsubst %.c,%, $(wildcard test/*.c))
+TESTS = $(patsubst %.c,%, $(wildcard test/*-test.c))
 
 all: $(TARGETS)
 
