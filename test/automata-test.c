@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <parser/automata-code.h>
 #include <parser/automata-build.h>
 #include <parser/automata-show.h>
 #include <parser/grammar.h>
@@ -29,7 +30,7 @@ int main (int argc, char *argv[])
 	if (!load_grammar (&g, G))
 		err (1, "cannot load grammar");
 
-	grammar_show (&g, stdout);
+	grammar_show (&g, stderr);
 
 	if (!automata_init (&a))
 		err (1, "cannot initialize automata");
@@ -37,7 +38,8 @@ int main (int argc, char *argv[])
 	if (!automata_build (&a, &g))
 		err (1, "cannot build states");
 
-	automata_show (&a, stdout);
+	automata_show (&a, stderr);
+	automata_code (&a, stdout);
 
 	grammar_fini (&g);
 	automata_fini (&a);
