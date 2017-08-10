@@ -170,6 +170,7 @@ int automata_init (struct automata *o)
 	if (!ht_init (&o->states, &state_type))
 		goto no_states;
 
+	o->start = NULL;
 	return 1;
 no_states:
 	ht_fini (&o->items);
@@ -216,6 +217,9 @@ const struct state *automata_add_state (struct automata *o, struct state *s)
 
 	if (!ht_insert (&o->states, s))
 		return NULL;
+
+	if (o->start == NULL)
+		o->start = s;
 
 	return s;
 }

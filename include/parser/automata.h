@@ -42,6 +42,7 @@ struct arrow *state_add_arrow (struct state *o, const struct symbol *on);
 struct automata {
 	struct ht items;   /* unordered set of items  */
 	struct ht states;  /* unordered set of states */
+	const struct state *start;
 };
 
 int  automata_init (struct automata *o);
