@@ -34,7 +34,7 @@ void grammar_show (const struct grammar *o, FILE *f)
 	size_t i;
 	const struct symbol *s;
 
-	printf ("start symbol: %s\n", o->start->name);
+	fprintf (f, "start symbol: %s\n", o->start->name);
 
 	ht_foreach (i, s, &o->symbols)
 		if (s->rules != NULL)
