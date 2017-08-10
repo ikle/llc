@@ -21,7 +21,7 @@ struct item {
 /* arrow key = on */
 struct arrow {
 	const struct symbol *on;  /* owned by grammar  */
-	const struct state *to;   /* should be transferred to automata */
+	struct state *to;         /* should be transferred to automata */
 };
 
 struct automata;
