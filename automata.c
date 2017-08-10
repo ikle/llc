@@ -140,6 +140,8 @@ int state_add_arrow (struct state *o, const struct symbol *on)
 	if ((a = malloc (sizeof (*a))) == NULL)
 		goto no_arrow;
 
+	a->on = on;
+
 	if (!ht_insert (&o->arrows, a))
 		goto no_insert;
 
