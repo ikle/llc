@@ -289,8 +289,8 @@ class LL1 (LL1_Table):
 		reason = 'Expect {}, got {}'.format (s, token)
 		raise ValueError (reason)
 
-	def make_ast (o, flow):
-		s = next (flow)
+	def make_ast (o):
+		s = next (o)
 
 		if not isinstance (s, int):
 			return s
@@ -299,7 +299,7 @@ class LL1 (LL1_Table):
 		args = []
 
 		for i in r.prod:
-			args.append (o.make_ast (flow))
+			args.append (o.make_ast ())
 
 		if isinstance (r.action, list):
 			def fn (x):
@@ -326,7 +326,7 @@ class LL1 (LL1_Table):
 			yield 0
 
 		o.start (fn (prog), verbose)
-		return o.make_ast (o)
+		return o.make_ast ()
 
 def se_str (o):
 	if not isinstance (o, list):
