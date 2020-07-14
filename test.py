@@ -246,26 +246,27 @@ class LL1 (LL1_Table):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
 
+	def pop (o, verbose = False):
+		if verbose:
+			st = ' '.join (map (str, reversed (o.stack)))
+			print ('stack: {:40}'.format (st), end = '')
+
+		return o.stack.pop ()
+
 	def apply (o, s, token, verbose = False):
 		i = o.T[s][token]
 		r = o.grammar.rules[i]
 
 		if verbose:
-			st = ' '.join (map (str, reversed (o.stack)))
-			action = 'apply  ' + r.rule_str ()
-			print ('stack: {:40} : {}'.format (st, action))
+			print (': apply ', r.rule_str ())
 
-		o.stack.pop ()
 		o.stack.extend (reversed (r.prod))
 		return i
 
 	def accept (o, token, verbose = False):
 		if verbose:
-			st = ' '.join (map (str, reversed (o.stack)))
-			action = 'accept ' + token
-			print ('stack: {:40} : {}'.format (st, action))
+			print (': accept', token)
 
-		o.stack.pop ()
 		return token
 
 	def run (o, prog, verbose = False):
@@ -276,7 +277,7 @@ class LL1 (LL1_Table):
 				print ('token', token)
 
 			while True:
-				s = o.stack[-1]
+				s = o.pop (verbose)
 
 				if not s in o.grammar.names:
 					break;
