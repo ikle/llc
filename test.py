@@ -246,13 +246,13 @@ class LL1 (LL1_Table):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
 
-	def reduce (o, s, token, verbose = False):
+	def apply (o, s, token, verbose = False):
 		i = o.T[s][token]
 		r = o.grammar.rules[i]
 
 		if verbose:
 			st = ' '.join (map (str, reversed (o.stack)))
-			action = 'reduce ' + r.rule_str ()
+			action = 'apply  ' + r.rule_str ()
 			print ('stack: {:40} : {}'.format (st, action))
 
 		o.stack.pop ()
@@ -281,7 +281,7 @@ class LL1 (LL1_Table):
 				if not s in o.grammar.names:
 					break;
 
-				yield o.reduce (s, token, verbose)
+				yield o.apply (s, token, verbose)
 
 			if token != s:
 				reason = 'Expect {}, got {}'.format (s, token)
