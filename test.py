@@ -253,8 +253,8 @@ class LL1 (LL1_Table):
 
 		return o.stack.pop ()
 
-	def apply (o, s, token, verbose = False):
-		i = o.T[s][token]
+	def apply (o, s, verbose = False):
+		i = o.T[s][o.token]
 		r = o.grammar.rules[i]
 
 		if verbose:
@@ -263,11 +263,11 @@ class LL1 (LL1_Table):
 		o.stack.extend (reversed (r.prod))
 		return i
 
-	def accept (o, token, verbose = False):
+	def accept (o, verbose = False):
 		if verbose:
-			print (': accept', token)
+			print (': accept', o.token)
 
-		return token
+		return o.token
 
 	def run (o, prog, verbose = False):
 		o.stack = [0, o.grammar.start ()]
@@ -276,13 +276,15 @@ class LL1 (LL1_Table):
 			if verbose:
 				print ('token', token)
 
+			o.token = token
+
 			while True:
 				s = o.pop (verbose)
 
 				if not s in o.grammar.names:
 					break;
 
-				yield o.apply (s, token, verbose)
+				yield o.apply (s, verbose)
 
 			if token != s:
 				reason = 'Expect {}, got {}'.format (s, token)
@@ -291,7 +293,7 @@ class LL1 (LL1_Table):
 			if s == 0:
 				break
 
-			yield o.accept (token, verbose)
+			yield o.accept (verbose)
 
 	def make_ast (o, flow):
 		s = next (flow)
