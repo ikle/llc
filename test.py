@@ -267,34 +267,27 @@ class LL1 (LL1_Table):
 		if o.verbose:
 			print (': accept', o.token)
 
-		return o.token
+		ret = o.token
+		o.token = next (o.prog)
+		return ret
 
-	def run (o, prog, verbose = False):
+	def start (o, prog, verbose = False):
+		o.prog    = prog
 		o.verbose = verbose
-		o.stack = [0, o.grammar.start ()]
+		o.stack   = [0, o.grammar.start ()]
+		o.token   = next (prog)
 
-		for token in prog:
-			if o.verbose:
-				print ('token', token)
+	def __next__ (o):
+		s = o.pop ()
 
-			o.token = token
+		if s in o.grammar.names:
+			return o.apply (s)
 
-			while True:
-				s = o.pop ()
+		if s == o.token:
+			return o.accept ()
 
-				if not s in o.grammar.names:
-					break;
-
-				yield o.apply (s)
-
-			if token != s:
-				reason = 'Expect {}, got {}'.format (s, token)
-				raise ValueError (reason)
-
-			if s == 0:
-				break
-
-			yield o.accept ()
+		reason = 'Expect {}, got {}'.format (s, token)
+		raise ValueError (reason)
 
 	def make_ast (o, flow):
 		s = next (flow)
@@ -332,7 +325,8 @@ class LL1 (LL1_Table):
 
 			yield 0
 
-		return o.make_ast (o.run (fn (prog), verbose))
+		o.start (fn (prog), verbose)
+		return o.make_ast (o)
 
 def se_str (o):
 	if not isinstance (o, list):
