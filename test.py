@@ -329,7 +329,12 @@ class LL1 (LL1_Table):
 			yield 0
 
 		o.start (fn (prog), verbose)
-		return o.make_ast ()
+		ast = o.make_ast ()
+
+		if o.token != 0:
+			raise ValueError ('Extra tokens at end')
+
+		return ast
 
 def se_str (o):
 	if not isinstance (o, list):
