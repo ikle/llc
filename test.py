@@ -254,8 +254,11 @@ class LL1 (LL1_Table):
 		return o.stack.pop ()
 
 	def apply (o, s):
-		i = o.T[s][o.token]
-		r = o.grammar.rules[i]
+		try:
+			i = o.T[s][o.token]
+			r = o.grammar.rules[i]
+		except KeyError:
+			raise ValueError ('Syntax Error')
 
 		if o.verbose:
 			print (': apply ', r.rule_str ())
@@ -357,6 +360,10 @@ prog = ['n', '+', 'n', '*', '(', 'n', ')']
 
 print ('parse ' + ' '.join (prog) + ':\n')
 
-ast = m.parse (prog, True)
+try:
+	ast = m.parse (prog, True)
+	print (se_str (ast))
 
-print (se_str (ast))
+except ValueError as e:
+	print ()
+	print ('E:', e)
