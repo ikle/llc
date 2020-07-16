@@ -217,23 +217,21 @@ class LL1_Table:
 		print ('table:\n')
 		print ('    ', end = '')
 
-		terms = g.terms | set (['$'])
-
-		for i in sorted (terms):
+		for i in sorted (g.terms):
 			print ('{:>4}'.format (i), '', end = '')
 
-		print ()
+		print ('   $')
 		print ('   +', end = '')
 
-		for i in sorted (terms):
+		for i in sorted (g.terms):
 			print ('----+', end = '')
 
-		print ()
+		print ('----+')
 
 		for n in sorted (g.names):
 			print ('{:2} |'.format (n), end = '')
 
-			for i in sorted (terms):
+			for i in sorted (g.terms) + [0]:
 				x = T[n][i] if i in T[n] else '·'
 
 				print ('{:>4}'.format (x), '', end = '')
