@@ -246,7 +246,10 @@ class LL1 (LL1_Table):
 
 	def pop (o):
 		if o.verbose:
-			st = ' '.join (map (str, reversed (o.stack)))
+			def fn (s):
+				return '$' if s == 0 else str (s)
+
+			st = ' '.join (map (fn, reversed (o.stack)))
 			print ('stack: {:40}'.format (st), end = '')
 
 		return o.stack.pop ()
