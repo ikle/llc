@@ -187,22 +187,22 @@ class LL1_Table:
 		for n in g.names:
 			T[n] = {}
 
-		def add (i, r, s):
-			if s in T[r.name]:
-				reason = 'conflict {} with {}'.format (r.name, s)
+		def add (i, n, s):
+			if s in T[n]:
+				reason = 'conflict {} with {}'.format (n, s)
 				raise ValueError (reason)
 
-			T[r.name][s] = i
+			T[n][s] = i
 
 		for i, r in enumerate (g.rules):
 			fs = first.calc (r.prod)
 
 			for s in fs:
-				add (i, r, s)
+				add (i, r.name, s)
 
 			if None in fs:
 				for s in follow [r.name]:
-					add (i, r, s)
+					add (i, r.name, s)
 
 		if verbose:
 			o.show ()
