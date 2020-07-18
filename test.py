@@ -30,14 +30,12 @@ class Grammar:
 			if r.action is None:
 				r.action = 'f' + str (i)
 
+		o.start = o.rules[0].name
 		o.names = set (r.name for r in rules)
 		o.terms = set (s for r in rules for s in r.prod) - o.names
 
 		if verbose:
 			o.show ()
-
-	def start (o):
-		return o.rules[0].name
 
 	def show (o, indent = 4):
 		print ('rules:\n')
@@ -138,7 +136,7 @@ class Follow (GSet):
 		for n in g.names:
 			o.FS [n] = set ()
 
-		o.FS [g.rules[0].name].add (0)
+		o.FS [g.start].add (0)
 
 		def step ():
 			count = 0
@@ -272,7 +270,7 @@ class LL1 (LL1_Table):
 	def start (o, prog, verbose = False):
 		o.prog    = prog
 		o.verbose = verbose
-		o.stack   = [0, o.grammar.start ()]
+		o.stack   = [0, o.grammar.start]
 		o.token   = next (prog)
 
 	def __next__ (o):
