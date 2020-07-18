@@ -9,10 +9,7 @@ class Rule:
 		o.action = action
 
 	def rule_str (o):
-		if o.prod:
-			rhs = ' '.join (o.prod)
-		else:
-			rhs = 'ε'
+		rhs = ' '.join (o.prod) if o.prod else 'ε'
 
 		return o.name + ' → ' + rhs
 
