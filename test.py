@@ -4,7 +4,6 @@ from functools import reduce
 
 class Rule:
 	def __init__ (o, name, prod, action = None):
-		o.id = 0
 		o.name = name
 		o.prod = prod
 		o.action = action
@@ -18,7 +17,7 @@ class Rule:
 		return o.name + ' → ' + rhs
 
 	def __repr__ (o):
-		rule = str (o.id) + ': ' + o.rule_str ()
+		rule = o.rule_str ()
 
 		if not isinstance (o.action, list):
 			return rule
@@ -31,8 +30,6 @@ class Grammar:
 		o.rules = rules
 
 		for i, r in enumerate (rules):
-			r.id = i
-
 			if r.action is None:
 				r.action = 'f' + str (i)
 
@@ -48,8 +45,8 @@ class Grammar:
 	def show (o, indent = 4):
 		print ('rules:\n')
 
-		for r in o.rules:
-			print (' ' * indent + str (r))
+		for i, r in enumerate (o.rules):
+			print (' ' * indent + str (i) + ': ' + str (r))
 
 		print ()
 		print ('terminals:', ' '.join (sorted (o.terms)))
@@ -187,25 +184,25 @@ class LL1_Table:
 
 		o.T = T = {}
 
-		def add (r, s):
+		def add (i, r, s):
 			if s in T[r.name]:
 				reason = 'conflict {} with {}'.format (r.name, s)
 				raise ValueError (reason)
 
-			T[r.name][s] = r.id
+			T[r.name][s] = i
 
 		for n in g.names:
 			T[n] = {}
 
-		for r in g.rules:
+		for i, r in enumerate (g.rules):
 			fs = first.calc (r.prod)
 
 			for s in fs:
-				add (r, s)
+				add (i, r, s)
 
 			if None in fs:
 				for s in follow [r.name]:
-					add (r, s)
+					add (i, r, s)
 
 		if verbose:
 			o.show ()
