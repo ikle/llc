@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-from functools import reduce
-
 class Rule:
 	def __init__ (o, name, prod, action = None):
 		o.name = name
