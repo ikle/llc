@@ -184,15 +184,15 @@ class LL1_Table:
 
 		o.T = T = {}
 
+		for n in g.names:
+			T[n] = {}
+
 		def add (i, r, s):
 			if s in T[r.name]:
 				reason = 'conflict {} with {}'.format (r.name, s)
 				raise ValueError (reason)
 
 			T[r.name][s] = i
-
-		for n in g.names:
-			T[n] = {}
 
 		for i, r in enumerate (g.rules):
 			fs = first.calc (r.prod)
