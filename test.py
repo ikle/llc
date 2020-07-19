@@ -462,7 +462,9 @@ class LR0:
 
 		A = {}
 
-		for s in T.keys ():
+		# Note: sorted to make reproducible FSM
+
+		for s in sorted (T.keys ()):
 			T[s] = o.item_set_close (T[s])
 
 			if o.add_state (T[s]):
