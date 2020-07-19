@@ -370,3 +370,141 @@ try:
 except ValueError as e:
 	print ()
 	print ('E:', e)
+
+print ()
+
+class LR0:
+	def __init__ (o, rules, verbose = False):
+		o.grammar = Grammar (rules, verbose)
+
+		o.map   = {}
+		o.next  = 0
+		o.trans = {}
+
+		K = {(0, 0)}
+		S = o.item_set_close (K)
+		o.add_state (S)
+		o.trans[0] = o.make_trans (S)
+
+		if verbose:
+			print ('kernel:\n')
+			o.item_set_show (K)
+
+			print ('closure:\n')
+			o.item_set_show (S)
+
+			o.show ()
+
+	def item_str (o, it):
+		i, pos = it
+		r = o.grammar.rules[i]
+		l = r.prod[:pos] + ['•'] + r.prod[pos:]
+
+		rhs = ' '.join (l) if r.prod else '• ε'
+
+		return r.name + ' → ' + rhs
+
+	def item_set_show (o, S, indent = 4):
+		for e in sorted (S):
+			print (' ' * indent + o.item_str (e))
+
+		print ()
+
+	def item_set_close (o, K):
+		S = K.copy ()
+		Q = list (S)
+
+		for i, pos in Q:
+			r = o.grammar.rules[i]
+
+			if not r.prod:
+				continue
+
+			if pos >= len (r.prod):
+				continue
+
+			s = r.prod[pos]
+
+			if not s in o.grammar.names:
+				continue
+
+			for idx, r in enumerate (o.grammar.rules):
+				if s == r.name:
+					e = (idx, 0)
+
+					if not e in S:
+						S.add (e)
+						Q.append (e)
+
+		return frozenset (S)
+
+	def add_state (o, S):
+		if S in o.map:
+			return False
+
+		o.map[S] = o.next
+		o.next += 1
+		return True
+
+	def make_trans (o, S):
+		T = {}
+
+		for i, pos in S:
+			r = o.grammar.rules[i]
+
+			if pos < len (r.prod):
+				s = r.prod[pos]
+
+				if not s in T:
+					T[s] = set ()
+
+				T[s].add ((i, pos + 1))
+
+		A = {}
+
+		for s in T.keys ():
+			T[s] = o.item_set_close (T[s])
+
+			if o.add_state (T[s]):
+				i = o.map[T[s]]
+				o.trans[i] = o.make_trans (T[s])
+
+			i = o.map[T[s]]
+			A[s] = i
+
+		return A
+
+	def show (o):
+		M = {}
+
+		for s in o.map:
+			i = o.map[s]
+			M[i] = s
+
+		for i in sorted (M):
+			print ('state ' + str (i) + ':\n')
+			o.item_set_show (M[i])
+
+			T = o.trans[i]
+
+			if T:
+				print ('    transitions:\n')
+
+				for s in sorted (T):
+					print ('       ', s, '→', T[s])
+
+				print ()
+
+rules_lr0 = [
+	Rule ("E'", ["E"]),
+	Rule ("E", ["T"]),
+	Rule ("E", ["E", "+", "T"]),
+	Rule ("T", ["F"]),
+	Rule ("T", ["T", "*", "F"]),
+	Rule ("F", ["n"]),
+	Rule ("F", ["(", "E", ")"])
+]
+
+m = LR0 (rules_lr0, True)
+
+print (m.trans)
