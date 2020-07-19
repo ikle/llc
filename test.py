@@ -391,12 +391,6 @@ class LR0:
 		o.trans[0] = o.make_trans (follow, S)
 
 		if verbose:
-			print ('kernel:\n')
-			o.item_set_show (K)
-
-			print ('closure:\n')
-			o.item_set_show (S)
-
 			o.show ()
 
 	def item_str (o, it):
