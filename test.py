@@ -377,14 +377,18 @@ class LR0:
 	def __init__ (o, rules, verbose = False):
 		o.grammar = Grammar (rules, verbose)
 
-		o.map   = {}
-		o.next  = 0
-		o.trans = {}
+		first  = First  (o.grammar, verbose)
+		follow = Follow (o.grammar, first, verbose)
+
+		o.map   = {}	# item set to state index map
+		o.next  = 0	# total number of states in map
+		o.trans = {}	# shift FSM
+		o.reducts = {}	# reduce action map
 
 		K = {(0, 0)}
 		S = o.item_set_close (K)
-		o.add_state (S)
-		o.trans[0] = o.make_trans (S)
+		o.add_state (follow, S)
+		o.trans[0] = o.make_trans (follow, S)
 
 		if verbose:
 			print ('kernel:\n')
@@ -438,15 +442,27 @@ class LR0:
 
 		return frozenset (S)
 
-	def add_state (o, S):
+	def count_reducts (o, follow, S):
+		state = o.map[S]
+		R = o.reducts[state] = {}
+
+		for i, pos in S:
+			r = o.grammar.rules[i]
+
+			if pos == len (r.prod):
+				for s in follow[r.name]:
+					R[s] = i
+
+	def add_state (o, follow, S):
 		if S in o.map:
 			return False
 
 		o.map[S] = o.next
 		o.next += 1
+		o.count_reducts (follow, S)
 		return True
 
-	def make_trans (o, S):
+	def make_trans (o, follow, S):
 		T = {}
 
 		for i, pos in S:
@@ -467,9 +483,9 @@ class LR0:
 		for s in sorted (T.keys ()):
 			T[s] = o.item_set_close (T[s])
 
-			if o.add_state (T[s]):
+			if o.add_state (follow, T[s]):
 				i = o.map[T[s]]
-				o.trans[i] = o.make_trans (T[s])
+				o.trans[i] = o.make_trans (follow, T[s])
 
 			i = o.map[T[s]]
 			A[s] = i
@@ -490,10 +506,25 @@ class LR0:
 			T = o.trans[i]
 
 			if T:
-				print ('    transitions:\n')
+				print ('    shifts:\n')
 
 				for s in sorted (T):
 					print ('       ', s, '→', T[s])
+
+				print ()
+
+			T = o.reducts[i]
+
+			def fn (s):
+				return '$' if s == 0 else s
+
+			if T:
+				print ('    reducts:\n')
+
+				for s in sorted (map (fn, T)):
+					r = T[0] if s == '$' else T[s]
+
+					print ('       ', s, '→', r)
 
 				print ()
 
@@ -509,4 +540,5 @@ rules_lr0 = [
 
 m = LR0 (rules_lr0, True)
 
-print (m.trans)
+print ('shifts:', m.trans)
+print ('reducts:', m.reducts)
