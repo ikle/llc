@@ -473,9 +473,6 @@ class SLR (LR):
 		for i, pos in Q:
 			r = o.grammar.rules[i]
 
-			if not r.prod:
-				continue
-
 			if pos >= len (r.prod):
 				continue
 
