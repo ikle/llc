@@ -445,6 +445,11 @@ class LR0:
 
 			if pos == len (r.prod):
 				for s in follow[r.name]:
+					if s in R:
+						fmt = 'RR conflict {} with {}'
+						reason = fmt.format (i, R[s])
+						raise ValueError (reason)
+
 					R[s] = i
 
 	def add_state (o, follow, S):
