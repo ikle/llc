@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+EOI = '$'
+
 class Rule:
 	def __init__ (o, name, prod, action = None):
 		o.name = name
@@ -65,7 +67,7 @@ class GSet:
 		prefix = ' ' * indent + s + ' = '
 
 		def fn (s):
-			return 'ε' if s is None else '$' if s == 0 else s
+			return 'ε' if s is None else s
 
 		print (prefix + ' '.join (sorted (map (fn, o.FS[s]))))
 
@@ -134,7 +136,7 @@ class Follow (GSet):
 		for n in g.names:
 			o.FS [n] = set ()
 
-		o.FS [g.start].add (0)
+		o.FS [g.start].add (EOI)
 
 		def step ():
 			count = 0
@@ -221,7 +223,7 @@ class LL1_Table:
 		for n in sorted (g.names):
 			print ('{:2} |'.format (n), end = '')
 
-			for i in sorted (g.terms) + [0]:
+			for i in sorted (g.terms) + [EOI]:
 				x = T[n][i] if i in T[n] else '·'
 
 				print ('{:>4}'.format (x), '', end = '')
@@ -236,10 +238,7 @@ class LL1 (LL1_Table):
 
 	def pop (o):
 		if o.verbose:
-			def fn (s):
-				return '$' if s == 0 else str (s)
-
-			st = ' '.join (map (fn, reversed (o.stack)))
+			st = ' '.join (reversed (o.stack))
 			print ('stack: {:40}'.format (st), end = '')
 
 		return o.stack.pop ()
@@ -268,7 +267,7 @@ class LL1 (LL1_Table):
 	def start (o, prog, verbose = False):
 		o.prog    = prog
 		o.verbose = verbose
-		o.stack   = [0, o.grammar.start]
+		o.stack   = [EOI, o.grammar.start]
 		o.token   = next (prog)
 
 	def __next__ (o):
@@ -317,12 +316,12 @@ class LL1 (LL1_Table):
 
 				yield token
 
-			yield 0
+			yield EOI
 
 		o.start (fn (prog), verbose)
 		ast = o.make_ast ()
 
-		if o.token != 0:
+		if o.token != EOI:
 			raise ValueError ('Extra tokens at end')
 
 		return ast
@@ -444,16 +443,11 @@ class LR:
 
 			T = o.reducts[i]
 
-			def fn (s):
-				return '$' if s == 0 else s
-
 			if T:
 				print ('    reducts:\n')
 
-				for s in sorted (map (fn, T)):
-					r = T[0] if s == '$' else T[s]
-
-					print ('       ', s, '→', r)
+				for s in sorted (T):
+					print ('       ', s, '→', T[s])
 
 				print ()
 
@@ -550,7 +544,7 @@ class LR1 (LR):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
 
-		o.add_state ({(0, 0, 0)})
+		o.add_state ({(0, 0, EOI)})
 
 		if verbose:
 			o.show ()
@@ -561,7 +555,6 @@ class LR1 (LR):
 		l = r.prod[:pos] + ['•'] + r.prod[pos:]
 
 		rhs = ' '.join (l) if r.prod else '• ε'
-		la  = '$' if la == 0 else la
 
 		return '{:20} : {}'.format (r.name + ' → ' + rhs, la)
 
