@@ -479,12 +479,12 @@ class SLR:
 		# Note: sorted to make reproducible FSM
 
 		for s in sorted (T.keys ()):
-			T[s] = o.item_set_close (T[s])
+			I = o.item_set_close (T[s])
 
-			i, new = o.add_state (follow, T[s])
+			i, new = o.add_state (follow, I)
 
 			if new:
-				o.trans[i] = o.make_trans (follow, T[s])
+				o.trans[i] = o.make_trans (follow, I)
 
 			A[s] = i
 
