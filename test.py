@@ -386,12 +386,16 @@ class LR:
 		o.reducts = {}	# reduce action map
 
 	def add_state (o, S):
-		if S in o.map:
-			return (o.map[S], False)
+		I = o.item_set_close (S)
 
-		i = o.map[S] = o.count
+		if I in o.map:
+			return (o.map[I], False)
+
+		i = o.map[I] = o.count
 		o.count += 1
-		o.count_reducts (i, S)
+		o.count_reducts (i, I)
+		o.trans[i] = o.make_trans (I)
+		o.process_conficts (i)
 		return (i, True)
 
 	def process_conficts (o, i):
@@ -460,8 +464,6 @@ class SLR (LR):
 		K = {(0, 0)}
 		S = o.item_set_close (K)
 		o.add_state (S)
-		o.trans[0] = o.make_trans (S)
-		o.process_conficts (0)
 
 		if verbose:
 			o.show ()
@@ -529,13 +531,7 @@ class SLR (LR):
 
 		for s in sorted (T.keys ()):
 			I = o.item_set_close (T[s])
-
 			i, new = o.add_state (I)
-
-			if new:
-				o.trans[i] = o.make_trans (I)
-				o.process_conficts (i)
-
 			A[s] = i
 
 		return A
