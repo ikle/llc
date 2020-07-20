@@ -453,12 +453,12 @@ class SLR:
 
 	def add_state (o, follow, S):
 		if S in o.map:
-			return False
+			return (o.map[S], False)
 
-		o.map[S] = o.count
-		o.count_reducts (follow, o.count, S)
+		i = o.map[S] = o.count
 		o.count += 1
-		return True
+		o.count_reducts (follow, i, S)
+		return (i, True)
 
 	def make_trans (o, follow, S):
 		T = {}
@@ -481,11 +481,11 @@ class SLR:
 		for s in sorted (T.keys ()):
 			T[s] = o.item_set_close (T[s])
 
-			if o.add_state (follow, T[s]):
-				i = o.map[T[s]]
+			i, new = o.add_state (follow, T[s])
+
+			if new:
 				o.trans[i] = o.make_trans (follow, T[s])
 
-			i = o.map[T[s]]
 			A[s] = i
 
 		return A
