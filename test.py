@@ -373,7 +373,7 @@ except ValueError as e:
 
 print ()
 
-class LR0:
+class SLR:
 	def __init__ (o, rules, verbose = False):
 		o.grammar = Grammar (rules, verbose)
 
@@ -527,7 +527,7 @@ class LR0:
 
 				print ()
 
-rules_lr0 = [
+rules_slr = [
 	Rule ("E'", ["E"]),
 	Rule ("E", ["T"]),
 	Rule ("E", ["E", "+", "T"]),
@@ -537,7 +537,7 @@ rules_lr0 = [
 	Rule ("F", ["(", "E", ")"])
 ]
 
-m = LR0 (rules_lr0, True)
+m = SLR (rules_slr, True)
 
 print ('shifts:', m.trans)
 print ('reducts:', m.reducts)
