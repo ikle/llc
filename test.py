@@ -436,9 +436,8 @@ class SLR:
 
 		return frozenset (S)
 
-	def count_reducts (o, follow, S):
-		state = o.map[S]
-		R = o.reducts[state] = {}
+	def count_reducts (o, follow, index, S):
+		R = o.reducts[index] = {}
 
 		for i, pos in S:
 			r = o.grammar.rules[i]
@@ -457,8 +456,8 @@ class SLR:
 			return False
 
 		o.map[S] = o.next
+		o.count_reducts (follow, o.next, S)
 		o.next += 1
-		o.count_reducts (follow, S)
 		return True
 
 	def make_trans (o, follow, S):
