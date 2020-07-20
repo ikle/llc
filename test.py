@@ -389,14 +389,14 @@ class LR:
 		I = o.item_set_close (S)
 
 		if I in o.map:
-			return (o.map[I], False)
+			return o.map[I]
 
 		i = o.map[I] = o.count
 		o.count += 1
 		o.count_reducts (i, I)
 		o.trans[i] = o.make_trans (I)
 		o.process_conficts (i)
-		return (i, True)
+		return i
 
 	def process_conficts (o, i):
 		T = o.trans[i]
@@ -528,8 +528,7 @@ class SLR (LR):
 		# Note: sorted to make reproducible FSM
 
 		for s in sorted (T.keys ()):
-			i, new = o.add_state (T[s])
-			A[s] = i
+			A[s] = o.add_state (T[s])
 
 		return A
 
