@@ -545,3 +545,95 @@ m = SLR (rules_slr, True)
 
 print ('transitions:', m.trans)
 print ('reducts:', m.reducts)
+
+class LR1 (LR):
+	def __init__ (o, rules, verbose = False):
+		super().__init__ (rules, verbose)
+
+		o.add_state ({(0, 0, 0)})
+
+		if verbose:
+			o.show ()
+
+	def item_str (o, it):
+		i, pos, la = it
+		r = o.grammar.rules[i]
+		l = r.prod[:pos] + ['•'] + r.prod[pos:]
+
+		rhs = ' '.join (l) if r.prod else '• ε'
+		la  = '$' if la == 0 else la
+
+		return '{:20} : {}'.format (r.name + ' → ' + rhs, la)
+
+	def item_set_close (o, K):
+		S = K.copy ()
+		Q = list (S)
+
+		for i, pos, la in Q:
+			r = o.grammar.rules[i]
+
+			if pos >= len (r.prod):
+				continue
+
+			s = r.prod[pos]
+
+			if not s in o.grammar.names:
+				continue
+
+			for idx, r in enumerate (o.grammar.rules):
+				if s == r.name:
+					FS = o.first.calc (r.prod[pos:] + [la])
+
+					for la in FS:
+						e = (idx, 0, la)
+
+						if not e in S:
+							S.add (e)
+							Q.append (e)
+
+		return frozenset (S)
+
+	def count_reducts (o, S):
+		R = {}
+
+		for i, pos, la in S:
+			r = o.grammar.rules[i]
+
+			if pos == len (r.prod):
+				for s in o.follow[r.name]:
+					if s in R and R[s] != i:
+						fmt = 'RR conflict {} with {}'
+						reason = fmt.format (i, R[s])
+						raise ValueError (reason)
+
+					R[s] = i
+
+		return R
+
+	def make_trans (o, S):
+		T = {}
+
+		for i, pos, la in S:
+			r = o.grammar.rules[i]
+
+			if pos < len (r.prod):
+				s = r.prod[pos]
+
+				if not s in T:
+					T[s] = set ()
+
+				T[s].add ((i, pos + 1, la))
+
+		A = {}
+
+		# Note: sorted to make reproducible FSM
+
+		for s in sorted (T.keys ()):
+			A[s] = o.add_state (T[s])
+
+		return A
+
+m = LR1 (rules_slr, True)
+
+print ('transitions:', m.trans)
+print ('reducts:', m.reducts)
