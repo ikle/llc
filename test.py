@@ -389,6 +389,7 @@ class SLR:
 		S = o.item_set_close (K)
 		o.add_state (follow, S)
 		o.trans[0] = o.make_trans (follow, S)
+		o.process_conficts (0)
 
 		if verbose:
 			o.show ()
@@ -460,6 +461,14 @@ class SLR:
 		o.count_reducts (follow, i, S)
 		return (i, True)
 
+	def process_conficts (o, i):
+		T = o.trans[i]
+		R = o.reducts[i]
+
+		if T.keys () & R.keys ():
+			reason = 'SR conflict in {}'.format (i)
+			raise ValueError (reason)
+
 	def make_trans (o, follow, S):
 		T = {}
 
@@ -485,6 +494,7 @@ class SLR:
 
 			if new:
 				o.trans[i] = o.make_trans (follow, I)
+				o.process_conficts (i)
 
 			A[s] = i
 
