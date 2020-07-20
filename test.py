@@ -600,13 +600,12 @@ class LR1 (LR):
 			r = o.grammar.rules[i]
 
 			if pos == len (r.prod):
-				for s in o.follow[r.name]:
-					if s in R and R[s] != i:
-						fmt = 'RR conflict {} with {}'
-						reason = fmt.format (i, R[s])
-						raise ValueError (reason)
+				if la in R and R[la] != i:
+					fmt = 'RR conflict {} with {}'
+					reason = fmt.format (i, R[la])
+					raise ValueError (reason)
 
-					R[s] = i
+				R[la] = i
 
 		return R
 
