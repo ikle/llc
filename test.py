@@ -393,7 +393,7 @@ class LR:
 
 		i = o.map[I] = o.count
 		o.count += 1
-		o.count_reducts (i, I)
+		o.reducts[i] = o.count_reducts (I)
 		o.trans[i] = o.make_trans (I)
 		o.process_conficts (i)
 		return i
@@ -494,8 +494,8 @@ class SLR (LR):
 
 		return frozenset (S)
 
-	def count_reducts (o, index, S):
-		R = o.reducts[index] = {}
+	def count_reducts (o, S):
+		R = {}
 
 		for i, pos in S:
 			r = o.grammar.rules[i]
@@ -508,6 +508,8 @@ class SLR (LR):
 						raise ValueError (reason)
 
 					R[s] = i
+
+		return R
 
 	def make_trans (o, S):
 		T = {}
