@@ -505,7 +505,7 @@ class SLR:
 			T = o.trans[i]
 
 			if T:
-				print ('    shifts:\n')
+				print ('    transitions:\n')
 
 				for s in sorted (T):
 					print ('       ', s, '→', T[s])
@@ -539,5 +539,5 @@ rules_slr = [
 
 m = SLR (rules_slr, True)
 
-print ('shifts:', m.trans)
+print ('transitions:', m.trans)
 print ('reducts:', m.reducts)
