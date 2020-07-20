@@ -373,26 +373,31 @@ except ValueError as e:
 
 print ()
 
-class SLR:
+class LR:
 	def __init__ (o, rules, verbose = False):
 		o.grammar = Grammar (rules, verbose)
-
-		first  = First  (o.grammar, verbose)
-		follow = Follow (o.grammar, first, verbose)
 
 		o.map   = {}	# item set to state index map
 		o.count = 0	# total number of states in map
 		o.trans = {}	# shift FSM
 		o.reducts = {}	# reduce action map
 
-		K = {(0, 0)}
-		S = o.item_set_close (K)
-		o.add_state (follow, S)
-		o.trans[0] = o.make_trans (follow, S)
-		o.process_conficts (0)
+	def add_state (o, follow, S):
+		if S in o.map:
+			return (o.map[S], False)
 
-		if verbose:
-			o.show ()
+		i = o.map[S] = o.count
+		o.count += 1
+		o.count_reducts (follow, i, S)
+		return (i, True)
+
+	def process_conficts (o, i):
+		T = o.trans[i]
+		R = o.reducts[i]
+
+		if T.keys () & R.keys ():
+			reason = 'SR conflict in {}'.format (i)
+			raise ValueError (reason)
 
 	def item_str (o, it):
 		i, pos = it
@@ -408,6 +413,58 @@ class SLR:
 			print (' ' * indent + o.item_str (e))
 
 		print ()
+
+	def show (o):
+		M = {}
+
+		for s in o.map:
+			i = o.map[s]
+			M[i] = s
+
+		for i in sorted (M):
+			print ('state ' + str (i) + ':\n')
+			o.item_set_show (M[i])
+
+			T = o.trans[i]
+
+			if T:
+				print ('    transitions:\n')
+
+				for s in sorted (T):
+					print ('       ', s, '→', T[s])
+
+				print ()
+
+			T = o.reducts[i]
+
+			def fn (s):
+				return '$' if s == 0 else s
+
+			if T:
+				print ('    reducts:\n')
+
+				for s in sorted (map (fn, T)):
+					r = T[0] if s == '$' else T[s]
+
+					print ('       ', s, '→', r)
+
+				print ()
+
+class SLR (LR):
+	def __init__ (o, rules, verbose = False):
+		super().__init__ (rules, verbose)
+
+		first  = First  (o.grammar, verbose)
+		follow = Follow (o.grammar, first, verbose)
+
+		K = {(0, 0)}
+		S = o.item_set_close (K)
+		o.add_state (follow, S)
+		o.trans[0] = o.make_trans (follow, S)
+		o.process_conficts (0)
+
+		if verbose:
+			o.show ()
 
 	def item_set_close (o, K):
 		S = K.copy ()
@@ -452,23 +509,6 @@ class SLR:
 
 					R[s] = i
 
-	def add_state (o, follow, S):
-		if S in o.map:
-			return (o.map[S], False)
-
-		i = o.map[S] = o.count
-		o.count += 1
-		o.count_reducts (follow, i, S)
-		return (i, True)
-
-	def process_conficts (o, i):
-		T = o.trans[i]
-		R = o.reducts[i]
-
-		if T.keys () & R.keys ():
-			reason = 'SR conflict in {}'.format (i)
-			raise ValueError (reason)
-
 	def make_trans (o, follow, S):
 		T = {}
 
@@ -499,42 +539,6 @@ class SLR:
 			A[s] = i
 
 		return A
-
-	def show (o):
-		M = {}
-
-		for s in o.map:
-			i = o.map[s]
-			M[i] = s
-
-		for i in sorted (M):
-			print ('state ' + str (i) + ':\n')
-			o.item_set_show (M[i])
-
-			T = o.trans[i]
-
-			if T:
-				print ('    transitions:\n')
-
-				for s in sorted (T):
-					print ('       ', s, '→', T[s])
-
-				print ()
-
-			T = o.reducts[i]
-
-			def fn (s):
-				return '$' if s == 0 else s
-
-			if T:
-				print ('    reducts:\n')
-
-				for s in sorted (map (fn, T)):
-					r = T[0] if s == '$' else T[s]
-
-					print ('       ', s, '→', r)
-
-				print ()
 
 rules_slr = [
 	Rule ("E'", ["E"]),
