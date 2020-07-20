@@ -445,7 +445,7 @@ class SLR:
 
 			if pos == len (r.prod):
 				for s in follow[r.name]:
-					if s in R:
+					if s in R and R[s] != i:
 						fmt = 'RR conflict {} with {}'
 						reason = fmt.format (i, R[s])
 						raise ValueError (reason)
