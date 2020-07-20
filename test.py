@@ -381,7 +381,7 @@ class SLR:
 		follow = Follow (o.grammar, first, verbose)
 
 		o.map   = {}	# item set to state index map
-		o.next  = 0	# total number of states in map
+		o.count = 0	# total number of states in map
 		o.trans = {}	# shift FSM
 		o.reducts = {}	# reduce action map
 
@@ -455,9 +455,9 @@ class SLR:
 		if S in o.map:
 			return False
 
-		o.map[S] = o.next
-		o.count_reducts (follow, o.next, S)
-		o.next += 1
+		o.map[S] = o.count
+		o.count_reducts (follow, o.count, S)
+		o.count += 1
 		return True
 
 	def make_trans (o, follow, S):
