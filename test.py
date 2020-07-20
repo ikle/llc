@@ -461,9 +461,7 @@ class SLR (LR):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
 
-		K = {(0, 0)}
-		S = o.item_set_close (K)
-		o.add_state (S)
+		o.add_state ({(0, 0)})
 
 		if verbose:
 			o.show ()
@@ -530,8 +528,7 @@ class SLR (LR):
 		# Note: sorted to make reproducible FSM
 
 		for s in sorted (T.keys ()):
-			I = o.item_set_close (T[s])
-			i, new = o.add_state (I)
+			i, new = o.add_state (T[s])
 			A[s] = i
 
 		return A
