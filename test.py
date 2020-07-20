@@ -377,18 +377,21 @@ class LR:
 	def __init__ (o, rules, verbose = False):
 		o.grammar = Grammar (rules, verbose)
 
+		o.first  = First  (o.grammar, verbose)
+		o.follow = Follow (o.grammar, o.first, verbose)
+
 		o.map   = {}	# item set to state index map
 		o.count = 0	# total number of states in map
 		o.trans = {}	# shift FSM
 		o.reducts = {}	# reduce action map
 
-	def add_state (o, follow, S):
+	def add_state (o, S):
 		if S in o.map:
 			return (o.map[S], False)
 
 		i = o.map[S] = o.count
 		o.count += 1
-		o.count_reducts (follow, i, S)
+		o.count_reducts (i, S)
 		return (i, True)
 
 	def process_conficts (o, i):
@@ -454,13 +457,10 @@ class SLR (LR):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
 
-		first  = First  (o.grammar, verbose)
-		follow = Follow (o.grammar, first, verbose)
-
 		K = {(0, 0)}
 		S = o.item_set_close (K)
-		o.add_state (follow, S)
-		o.trans[0] = o.make_trans (follow, S)
+		o.add_state (S)
+		o.trans[0] = o.make_trans (S)
 		o.process_conficts (0)
 
 		if verbose:
@@ -494,14 +494,14 @@ class SLR (LR):
 
 		return frozenset (S)
 
-	def count_reducts (o, follow, index, S):
+	def count_reducts (o, index, S):
 		R = o.reducts[index] = {}
 
 		for i, pos in S:
 			r = o.grammar.rules[i]
 
 			if pos == len (r.prod):
-				for s in follow[r.name]:
+				for s in o.follow[r.name]:
 					if s in R and R[s] != i:
 						fmt = 'RR conflict {} with {}'
 						reason = fmt.format (i, R[s])
@@ -509,7 +509,7 @@ class SLR (LR):
 
 					R[s] = i
 
-	def make_trans (o, follow, S):
+	def make_trans (o, S):
 		T = {}
 
 		for i, pos in S:
@@ -530,10 +530,10 @@ class SLR (LR):
 		for s in sorted (T.keys ()):
 			I = o.item_set_close (T[s])
 
-			i, new = o.add_state (follow, I)
+			i, new = o.add_state (I)
 
 			if new:
-				o.trans[i] = o.make_trans (follow, I)
+				o.trans[i] = o.make_trans (I)
 				o.process_conficts (i)
 
 			A[s] = i
