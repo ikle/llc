@@ -78,6 +78,8 @@ class First (GSet):
 
 		super().__init__ ()
 
+		o.FS [EOI] = set ([EOI])
+
 		for s in g.terms:
 			o.FS [s] = set ([s])
 
@@ -573,10 +575,11 @@ class LR1 (LR):
 			if not s in o.grammar.names:
 				continue
 
+			tail = r.prod[pos + 1:] + [la]
+			FS = o.first.calc (tail)
+
 			for idx, r in enumerate (o.grammar.rules):
 				if s == r.name:
-					FS = o.first.calc (r.prod[pos:] + [la])
-
 					for la in FS:
 						e = (idx, 0, la)
 
