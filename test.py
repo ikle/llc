@@ -376,7 +376,8 @@ print ()
 
 class LR:
 	def __init__ (o, rules, verbose = False):
-		o.grammar = Grammar (rules, verbose)
+		arules = [Rule ("γ", [rules[0].name], [0])] + rules
+		o.grammar = Grammar (arules, verbose)
 
 		o.first  = First  (o.grammar, verbose)
 		o.follow = Follow (o.grammar, o.first, verbose)
@@ -528,7 +529,6 @@ class SLR (LR):
 		return A
 
 rules_slr = [
-	Rule ("E'", ["E"]),
 	Rule ("E", ["T"]),
 	Rule ("E", ["E", "+", "T"]),
 	Rule ("T", ["F"]),
