@@ -454,6 +454,99 @@ class LR:
 
 				print ()
 
+	# LR Parser Interpretator
+
+	def map_args (o, r, args):
+		if isinstance (r.action, list):
+			def fn (x):
+				if isinstance (x, int):
+					return args[x]
+
+				return x
+
+			v = list (map (fn, r.action))
+
+			return v[0] if len (v) == 1 else v
+
+		return [r.action] + args
+
+	def parse (o, prog, verbose = False):
+		def fn (prog):
+			for token in prog:
+				if not token in o.grammar.terms:
+					reason = 'Unknown token ' + str (token)
+					raise ValueError (reason)
+
+				yield token
+
+			yield EOI
+
+		prog = fn (prog)
+
+		symbols = [EOI]  # for verbose mode only
+		args    = [EOI]
+		states  = [EOI, 0]
+		token   = next (prog)
+
+		while True:
+			if verbose:
+				st = ' '.join (symbols)
+				print ('stack: {:40}'.format (st), end = '')
+
+			i = states[-1]
+			T = o.trans[i]
+
+			if token in T.keys ():
+				if verbose:
+					fmt = 'shift  {},\tgoto {}'
+					print (fmt.format (token, T[token]))
+
+				symbols.append (token)  # verbose mode
+				args.append (token)
+				states.append (T[token])
+				token = next (prog)
+				continue
+
+			R = o.reducts[i]
+
+			if token in R.keys ():
+				if R[token] == 0:
+					if verbose:
+						print ('accept')
+
+					break
+
+				r = o.grammar.rules[R[token]]
+				ast = o.map_args (r, args[-len (r.prod):])
+
+				for i in range (len (r.prod)):
+					symbols.pop ()  # verbose mode
+					args.pop ()
+					states.pop ()
+
+				symbols.append (r.name)  # verbose mode
+				args.append (ast)
+
+				i = states[-1]
+				T = o.trans[i]
+
+				if not r.name in T:
+					raise ValueError ('Syntax error')
+
+				if verbose:
+					fmt = 'reduce {},\tgoto {}'
+					print (fmt.format (r.rule_str (), T[r.name]))
+
+				states.append (T[r.name])
+				continue
+
+			raise ValueError ('Syntax error')
+
+		if token != EOI:
+			raise ValueError ('Extra tokens at end')
+
+		return args[-1]
+
 class SLR (LR):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
@@ -529,18 +622,30 @@ class SLR (LR):
 		return A
 
 rules_slr = [
-	Rule ("E", ["T"]),
-	Rule ("E", ["E", "+", "T"]),
-	Rule ("T", ["F"]),
-	Rule ("T", ["T", "*", "F"]),
-	Rule ("F", ["n"]),
-	Rule ("F", ["(", "E", ")"])
+	Rule ("E", ["T"],		[0]),
+	Rule ("E", ["E", "+", "T"],	["+", 0, 2]),
+	Rule ("T", ["F"],		[0]),
+	Rule ("T", ["T", "*", "F"],	["*", 0, 2]),
+	Rule ("F", ["n"],		[0]),
+	Rule ("F", ["(", "E", ")"],	[1])
 ]
 
 m = SLR (rules_slr, True)
 
 print ('transitions:', m.trans)
 print ('reducts:', m.reducts)
+
+prog = ['n', '+', 'n', '*', '(', 'n', ')']
+
+print ('parse ' + ' '.join (prog) + ':\n')
+
+try:
+	ast = m.parse (prog, True)
+	print (se_str (ast))
+
+except ValueError as e:
+	print ()
+	print ('E:', e)
 
 class LR1 (LR):
 	def __init__ (o, rules, verbose = False):
@@ -632,3 +737,15 @@ m = LR1 (rules_slr, True)
 
 print ('transitions:', m.trans)
 print ('reducts:', m.reducts)
+
+prog = ['n', '+', 'n', '*', '(', 'n', ')']
+
+print ('parse ' + ' '.join (prog) + ':\n')
+
+try:
+	ast = m.parse (prog, True)
+	print (se_str (ast))
+
+except ValueError as e:
+	print ()
+	print ('E:', e)
