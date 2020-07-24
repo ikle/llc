@@ -507,20 +507,20 @@ class LR:
 
 		return [r.action] + args
 
-	def reduce (o):
+	def reduce (o, la):
 		i = o.states[-1]
 		R = o.reducts[i]
 
-		if not o.token in R.keys ():
+		if not la in R.keys ():
 			raise ValueError ('Syntax error')
 
-		if R[o.token] == 0:
+		if R[la] == 0:
 			if o.verbose:
 				print ('accept')
 
 			return False
 
-		r = o.grammar.rules[R[o.token]]
+		r = o.grammar.rules[R[la]]
 		ast = o.map_args (r, o.args[-len (r.prod):])
 
 		for i in range (len (r.prod)):
@@ -552,7 +552,7 @@ class LR:
 				st = ' '.join (o.symbols)
 				print ('stack: {:40}'.format (st), end = '')
 
-			if not (o.shift () or o.reduce ()):
+			if not (o.shift () or o.reduce (o.token)):
 				break
 
 		if o.token != EOI:
