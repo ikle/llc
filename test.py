@@ -480,9 +480,10 @@ class LR:
 		if o.verbose:
 			print ('shift  {},\t'.format (o.token), end = '')
 
-		o.symbols.append (o.token)  # verbose mode
-		o.args.append (o.token)
+		s = o.token
+		o.args.append (s)
 		o.token = next (o.prog)
+		return s
 
 	def map_args (o, r, args):
 		if isinstance (r.action, list):
@@ -503,7 +504,7 @@ class LR:
 		R = o.reducts[i]
 
 		if not la in R.keys ():
-			return False
+			return None
 
 		r = o.grammar.rules[R[la]]
 		ast = o.map_args (r, o.args[-len (r.prod):])
@@ -513,24 +514,16 @@ class LR:
 			o.args.pop ()
 			o.states.pop ()
 
-		o.symbols.append (r.name)  # verbose mode
 		o.args.append (ast)
 
 		if o.verbose:
 			print ('reduce {},\t'.format (r.rule_str ()), end = '')
 
-		return True
+		return r.name
 
-	def goto (o):
+	def goto (o, top):
 		i = o.states[-1]
 		T = o.trans[i]
-		top = o.symbols[-1]
-
-		if top == o.grammar.start:
-			if o.verbose:
-				print ('accept')
-
-			return False
 
 		if not top in T:
 			raise ValueError ('Syntax error')
@@ -538,8 +531,8 @@ class LR:
 		if o.verbose:
 			print ('goto', T[top])
 
+		o.symbols.append (top)  # verbose mode
 		o.states.append (T[top])
-		return True
 
 	def parse (o, prog, verbose = False):
 		o.start (prog, verbose)
@@ -549,11 +542,18 @@ class LR:
 				st = ' '.join (o.symbols)
 				print ('stack: {:40}'.format (st), end = '')
 
-			if not o.reduce (o.token):
-				o.shift ()
+			top = o.reduce (o.token)
 
-			if not o.goto ():
+			if top == None:
+				top = o.shift ()
+
+			if top == o.grammar.start:
+				if o.verbose:
+					print ('accept')
+
 				break
+
+			o.goto (top)
 
 		if o.token != EOI:
 			raise ValueError ('Extra tokens at end')
