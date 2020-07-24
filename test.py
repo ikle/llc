@@ -484,12 +484,10 @@ class LR:
 			return False
 
 		if o.verbose:
-			fmt = 'shift  {},\tgoto {}'
-			print (fmt.format (o.token, T[o.token]))
+			print ('shift  {},\t'.format (o.token), end = '')
 
 		o.symbols.append (o.token)  # verbose mode
 		o.args.append (o.token)
-		o.states.append (T[o.token])
 		o.token = next (o.prog)
 		return True
 
@@ -531,18 +529,23 @@ class LR:
 		o.symbols.append (r.name)  # verbose mode
 		o.args.append (ast)
 
+		if o.verbose:
+			print ('reduce {},\t'.format (r.rule_str ()), end = '')
+
+		return True
+
+	def goto (o):
 		i = o.states[-1]
 		T = o.trans[i]
+		top = o.symbols[-1]
 
-		if not r.name in T:
+		if not top in T:
 			raise ValueError ('Syntax error')
 
 		if o.verbose:
-			fmt = 'reduce {},\tgoto {}'
-			print (fmt.format (r.rule_str (), T[r.name]))
+			print ('goto', T[top])
 
-		o.states.append (T[r.name])
-		return True
+		o.states.append (T[top])
 
 	def parse (o, prog, verbose = False):
 		o.start (prog, verbose)
@@ -554,6 +557,8 @@ class LR:
 
 			if not (o.shift () or o.reduce (o.token)):
 				break
+
+			o.goto ()
 
 		if o.token != EOI:
 			raise ValueError ('Extra tokens at end')
