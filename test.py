@@ -456,6 +456,43 @@ class LR:
 
 	# LR Parser Interpretator
 
+	def start (o, prog, verbose = False):
+		o.verbose = verbose
+
+		def fn (prog):
+			for token in prog:
+				if not token in o.grammar.terms:
+					reason = 'Unknown token ' + str (token)
+					raise ValueError (reason)
+
+				yield token
+
+			yield EOI
+
+		o.prog = fn (prog)
+
+		o.symbols = [EOI]	# symbol stack for verbose mode only
+		o.args    = [EOI]	# AST node stack
+		o.states  = [EOI, 0]	# state stack
+		o.token   = next (o.prog)
+
+	def shift (o):
+		i = o.states[-1]
+		T = o.trans[i]
+
+		if not o.token in T.keys ():
+			return False
+
+		if o.verbose:
+			fmt = 'shift  {},\tgoto {}'
+			print (fmt.format (o.token, T[o.token]))
+
+		o.symbols.append (o.token)  # verbose mode
+		o.args.append (o.token)
+		o.states.append (T[o.token])
+		o.token = next (o.prog)
+		return True
+
 	def map_args (o, r, args):
 		if isinstance (r.action, list):
 			def fn (x):
@@ -470,82 +507,58 @@ class LR:
 
 		return [r.action] + args
 
-	def parse (o, prog, verbose = False):
-		def fn (prog):
-			for token in prog:
-				if not token in o.grammar.terms:
-					reason = 'Unknown token ' + str (token)
-					raise ValueError (reason)
+	def reduce (o):
+		i = o.states[-1]
+		R = o.reducts[i]
 
-				yield token
-
-			yield EOI
-
-		prog = fn (prog)
-
-		symbols = [EOI]  # for verbose mode only
-		args    = [EOI]
-		states  = [EOI, 0]
-		token   = next (prog)
-
-		while True:
-			if verbose:
-				st = ' '.join (symbols)
-				print ('stack: {:40}'.format (st), end = '')
-
-			i = states[-1]
-			T = o.trans[i]
-
-			if token in T.keys ():
-				if verbose:
-					fmt = 'shift  {},\tgoto {}'
-					print (fmt.format (token, T[token]))
-
-				symbols.append (token)  # verbose mode
-				args.append (token)
-				states.append (T[token])
-				token = next (prog)
-				continue
-
-			R = o.reducts[i]
-
-			if token in R.keys ():
-				if R[token] == 0:
-					if verbose:
-						print ('accept')
-
-					break
-
-				r = o.grammar.rules[R[token]]
-				ast = o.map_args (r, args[-len (r.prod):])
-
-				for i in range (len (r.prod)):
-					symbols.pop ()  # verbose mode
-					args.pop ()
-					states.pop ()
-
-				symbols.append (r.name)  # verbose mode
-				args.append (ast)
-
-				i = states[-1]
-				T = o.trans[i]
-
-				if not r.name in T:
-					raise ValueError ('Syntax error')
-
-				if verbose:
-					fmt = 'reduce {},\tgoto {}'
-					print (fmt.format (r.rule_str (), T[r.name]))
-
-				states.append (T[r.name])
-				continue
-
+		if not o.token in R.keys ():
 			raise ValueError ('Syntax error')
 
-		if token != EOI:
+		if R[o.token] == 0:
+			if o.verbose:
+				print ('accept')
+
+			return False
+
+		r = o.grammar.rules[R[o.token]]
+		ast = o.map_args (r, o.args[-len (r.prod):])
+
+		for i in range (len (r.prod)):
+			o.symbols.pop ()  # verbose mode
+			o.args.pop ()
+			o.states.pop ()
+
+		o.symbols.append (r.name)  # verbose mode
+		o.args.append (ast)
+
+		i = o.states[-1]
+		T = o.trans[i]
+
+		if not r.name in T:
+			raise ValueError ('Syntax error')
+
+		if o.verbose:
+			fmt = 'reduce {},\tgoto {}'
+			print (fmt.format (r.rule_str (), T[r.name]))
+
+		o.states.append (T[r.name])
+		return True
+
+	def parse (o, prog, verbose = False):
+		o.start (prog, verbose)
+
+		while True:
+			if o.verbose:
+				st = ' '.join (o.symbols)
+				print ('stack: {:40}'.format (st), end = '')
+
+			if not (o.shift () or o.reduce ()):
+				break
+
+		if o.token != EOI:
 			raise ValueError ('Extra tokens at end')
 
-		return args[-1]
+		return o.args[-1]
 
 class SLR (LR):
 	def __init__ (o, rules, verbose = False):
