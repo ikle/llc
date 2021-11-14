@@ -278,12 +278,6 @@ class LL1 (LL1_Table):
 		o.token = next (o.prog)
 		return ret
 
-	def start (o, prog, verbose = False):
-		o.prog    = prog
-		o.verbose = verbose
-		o.stack   = [EOI, o.grammar.start]
-		o.token   = next (prog)
-
 	def make_ast (o):
 		if o.verbose:
 			st = ' '.join (reversed (o.stack))
@@ -307,7 +301,11 @@ class LL1 (LL1_Table):
 
 			yield EOI
 
-		o.start (fn (prog), verbose)
+		o.prog    = fn (prog)
+		o.verbose = verbose
+		o.stack   = [EOI, o.grammar.start]
+		o.token   = next (o.prog)
+
 		ast = o.make_ast ()
 
 		if o.token != EOI:
