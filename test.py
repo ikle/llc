@@ -459,16 +459,16 @@ class LR:
 		o.symbols = [EOI]	# symbol stack for verbose mode only
 		o.args    = [EOI]	# AST node stack
 		o.states  = [EOI, 0]	# state stack
-		o.token   = next (o.prog)
+		o.la      = next (o.prog)
 
 	def shift (o):
 		if o.verbose:
-			print ('shift  {},\t'.format (o.token), end = '')
+			print ('shift  {},\t'.format (o.la), end = '')
 
-		s = o.token
-		o.args.append (s)
-		o.token = next (o.prog)
-		return s
+		token = o.la
+		o.args.append (token)
+		o.la = next (o.prog)
+		return token
 
 	def reduce (o, la):
 		i = o.states[-1]
@@ -513,7 +513,7 @@ class LR:
 				st = ' '.join (o.symbols)
 				print ('stack: {:40}'.format (st), end = '')
 
-			top = o.reduce (o.token)
+			top = o.reduce (o.la)
 
 			if top == None:
 				top = o.shift ()
@@ -526,7 +526,7 @@ class LR:
 
 			o.goto (top)
 
-		if o.token != EOI:
+		if o.la != EOI:
 			raise ValueError ('Extra tokens at end')
 
 		return o.args[-1]
