@@ -246,6 +246,9 @@ class LL1 (LL1_Table):
 		return o.stack.pop ()
 
 	def apply (o, s):
+		if o.verbose:
+			print (': {} at {} '.format (s, o.token), end = '')
+
 		try:
 			i = o.T[s][o.token]
 			r = o.grammar.rules[i]
