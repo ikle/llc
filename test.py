@@ -22,6 +22,20 @@ class Rule:
 		action = ' '.join (map (str, o.action))
 		return '{:20} : {}'.format (rule, action)
 
+	def map_args (o, args):
+		if isinstance (o.action, list):
+			def fn (x):
+				if isinstance (x, int):
+					return args[x]
+
+				return x
+
+			v = list (map (fn, o.action))
+
+			return v[0] if len (v) == 1 else v
+
+		return [o.action] + args
+
 class Grammar:
 	def __init__ (o, rules, verbose = False):
 		o.rules = rules
@@ -293,18 +307,7 @@ class LL1 (LL1_Table):
 		for i in r.prod:
 			args.append (o.make_ast ())
 
-		if isinstance (r.action, list):
-			def fn (x):
-				if isinstance (x, int):
-					return args[x]
-
-				return x
-
-			v = list (map (fn, r.action))
-
-			return v[0] if len (v) == 1 else v
-
-		return [r.action] + args
+		return r.map_args (args)
 
 	def parse (o, prog, verbose = False):
 		def fn (prog):
@@ -482,20 +485,6 @@ class LR:
 		o.token = next (o.prog)
 		return s
 
-	def map_args (o, r, args):
-		if isinstance (r.action, list):
-			def fn (x):
-				if isinstance (x, int):
-					return args[x]
-
-				return x
-
-			v = list (map (fn, r.action))
-
-			return v[0] if len (v) == 1 else v
-
-		return [r.action] + args
-
 	def reduce (o, la):
 		i = o.states[-1]
 		R = o.reducts[i]
@@ -504,7 +493,7 @@ class LR:
 			return None
 
 		r = o.grammar.rules[R[la]]
-		ast = o.map_args (r, o.args[-len (r.prod):])
+		ast = r.map_args (o.args[-len (r.prod):])
 
 		for i in range (len (r.prod)):
 			o.symbols.pop ()  # verbose mode
