@@ -285,10 +285,7 @@ class LL1 (LL1_Table):
 
 		s = o.stack.pop ()
 
-		if s == o.la:
-			return o.accept ()
-
-		return o.apply (s)
+		return o.accept () if s == o.la else o.apply (s)
 
 	def parse (o, prog, verbose = False):
 		def fn (prog):
