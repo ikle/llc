@@ -254,13 +254,13 @@ class LL1 (LL1_Table):
 
 	def apply (o, s):
 		if o.verbose:
-			print (': {} at {} '.format (s, o.token), end = '')
+			print (': {} at {} '.format (s, o.la), end = '')
 
 		try:
-			i = o.T[s][o.token]
+			i = o.T[s][o.la]
 			r = o.grammar.rules[i]
 		except KeyError:
-			reason = 'parse {}, got {}'.format (s, o.token)
+			reason = 'parse {}, got {}'.format (s, o.la)
 			raise ValueError ('Syntax Error: ' + reason)
 
 		if o.verbose:
@@ -272,11 +272,11 @@ class LL1 (LL1_Table):
 
 	def accept (o):
 		if o.verbose:
-			print (': accept', o.token)
+			print (': accept', o.la)
 
-		ret = o.token
-		o.token = next (o.prog)
-		return ret
+		token = o.la
+		o.la = next (o.prog)
+		return token
 
 	def make_ast (o):
 		if o.verbose:
@@ -285,7 +285,7 @@ class LL1 (LL1_Table):
 
 		s = o.stack.pop ()
 
-		if s == o.token:
+		if s == o.la:
 			return o.accept ()
 
 		return o.apply (s)
@@ -304,11 +304,11 @@ class LL1 (LL1_Table):
 		o.prog    = fn (prog)
 		o.verbose = verbose
 		o.stack   = [EOI, o.grammar.start]
-		o.token   = next (o.prog)
+		o.la      = next (o.prog)
 
 		ast = o.make_ast ()
 
-		if o.token != EOI:
+		if o.la != EOI:
 			raise ValueError ('Extra tokens at end')
 
 		return ast
