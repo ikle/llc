@@ -297,11 +297,7 @@ class LL1 (LL1_Table):
 		if s == o.token:
 			return o.accept ()
 
-		if s in o.grammar.names:
-			return o.apply (s)
-
-		reason = 'Expect {}, got {}'.format (s, o.token)
-		raise ValueError (reason)
+		return o.apply (s)
 
 	def parse (o, prog, verbose = False):
 		def fn (prog):
