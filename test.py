@@ -275,25 +275,19 @@ class LL1 (LL1_Table):
 		o.stack   = [EOI, o.grammar.start]
 		o.token   = next (prog)
 
-	def __next__ (o):
+	def make_ast (o):
 		s = o.pop ()
 
 		if s in o.grammar.names:
-			return o.apply (s)
+			i = o.apply (s)
 
-		if s == o.token:
+		elif s == o.token:
 			return o.accept ()
+		else:
+			reason = 'Expect {}, got {}'.format (s, o.token)
+			raise ValueError (reason)
 
-		reason = 'Expect {}, got {}'.format (s, o.token)
-		raise ValueError (reason)
-
-	def make_ast (o):
-		s = next (o)
-
-		if not isinstance (s, int):
-			return s
-
-		r = o.grammar.rules[s]
+		r = o.grammar.rules[i]
 		args = []
 
 		for i in r.prod:
