@@ -252,13 +252,6 @@ class LL1 (LL1_Table):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
 
-	def pop (o):
-		if o.verbose:
-			st = ' '.join (reversed (o.stack))
-			print ('stack: {:40}'.format (st), end = '')
-
-		return o.stack.pop ()
-
 	def apply (o, s):
 		if o.verbose:
 			print (': {} at {} '.format (s, o.token), end = '')
@@ -292,7 +285,11 @@ class LL1 (LL1_Table):
 		o.token   = next (prog)
 
 	def make_ast (o):
-		s = o.pop ()
+		if o.verbose:
+			st = ' '.join (reversed (o.stack))
+			print ('stack: {:40}'.format (st), end = '')
+
+		s = o.stack.pop ()
 
 		if s == o.token:
 			return o.accept ()
