@@ -252,6 +252,13 @@ class LL1 (LL1_Table):
 	def __init__ (o, rules, verbose = False):
 		super().__init__ (rules, verbose)
 
+	def accept (o):
+		if o.verbose:
+			print (': accept', o.la)
+
+		token, o.la = o.la, next (o.prog)
+		return token
+
 	def apply (o, s):
 		if o.verbose:
 			print (': {} at {} '.format (s, o.la), end = '')
@@ -269,13 +276,6 @@ class LL1 (LL1_Table):
 		o.stack.extend (reversed (r.prod))
 
 		return r.map_args ([o.make_ast () for _ in r.prod])
-
-	def accept (o):
-		if o.verbose:
-			print (': accept', o.la)
-
-		token, o.la = o.la, next (o.prog)
-		return token
 
 	def make_ast (o):
 		if o.verbose:
