@@ -278,11 +278,11 @@ class LL1 (LL1_Table):
 	def make_ast (o):
 		s = o.pop ()
 
+		if s == o.token:
+			return o.accept ()
+
 		if s in o.grammar.names:
 			i = o.apply (s)
-
-		elif s == o.token:
-			return o.accept ()
 		else:
 			reason = 'Expect {}, got {}'.format (s, o.token)
 			raise ValueError (reason)
