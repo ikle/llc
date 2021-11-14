@@ -267,7 +267,8 @@ class LL1 (LL1_Table):
 			i = o.T[s][o.token]
 			r = o.grammar.rules[i]
 		except KeyError:
-			raise ValueError ('Syntax Error')
+			reason = 'parse {}, got {}'.format (s, o.token)
+			raise ValueError ('Syntax Error: ' + reason)
 
 		if o.verbose:
 			print (': apply ', r.rule_str ())
