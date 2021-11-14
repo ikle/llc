@@ -274,8 +274,7 @@ class LL1 (LL1_Table):
 		if o.verbose:
 			print (': accept', o.la)
 
-		token = o.la
-		o.la = next (o.prog)
+		token, o.la = o.la, next (o.prog)
 		return token
 
 	def make_ast (o):
