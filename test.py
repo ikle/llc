@@ -284,7 +284,7 @@ class LL1 (LL1_Table):
 		if s == o.token:
 			return o.accept ()
 
-		reason = 'Expect {}, got {}'.format (s, token)
+		reason = 'Expect {}, got {}'.format (s, o.token)
 		raise ValueError (reason)
 
 	def make_ast (o):
