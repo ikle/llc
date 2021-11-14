@@ -264,7 +264,7 @@ class LL1 (LL1_Table):
 			raise ValueError ('Syntax Error: ' + reason)
 
 		if o.verbose:
-			print (': apply ', r.rule_str ())
+			print (': apply ' + r.rule_str ())
 
 		o.stack.extend (reversed (r.prod))
 
