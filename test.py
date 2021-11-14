@@ -273,7 +273,8 @@ class LL1 (LL1_Table):
 			print (': apply ', r.rule_str ())
 
 		o.stack.extend (reversed (r.prod))
-		return i
+
+		return r.map_args ([o.make_ast () for _ in r.prod])
 
 	def accept (o):
 		if o.verbose:
@@ -296,14 +297,10 @@ class LL1 (LL1_Table):
 			return o.accept ()
 
 		if s in o.grammar.names:
-			i = o.apply (s)
-		else:
-			reason = 'Expect {}, got {}'.format (s, o.token)
-			raise ValueError (reason)
+			return o.apply (s)
 
-		r = o.grammar.rules[i]
-
-		return r.map_args ([o.make_ast () for i in r.prod])
+		reason = 'Expect {}, got {}'.format (s, o.token)
+		raise ValueError (reason)
 
 	def parse (o, prog, verbose = False):
 		def fn (prog):
