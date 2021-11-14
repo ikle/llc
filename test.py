@@ -302,12 +302,8 @@ class LL1 (LL1_Table):
 			raise ValueError (reason)
 
 		r = o.grammar.rules[i]
-		args = []
 
-		for i in r.prod:
-			args.append (o.make_ast ())
-
-		return r.map_args (args)
+		return r.map_args ([o.make_ast () for i in r.prod])
 
 	def parse (o, prog, verbose = False):
 		def fn (prog):
